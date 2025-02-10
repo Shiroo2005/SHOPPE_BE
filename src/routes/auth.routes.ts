@@ -1,5 +1,5 @@
 import express from 'express'
-import { loginValidator } from '~/middlewares/auth.middlewares'
+import { loginValidator } from '~/middlewares/auth.middleware'
 
 const authRouter = express.Router()
 
