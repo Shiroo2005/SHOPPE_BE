@@ -30,8 +30,8 @@ class UserService {
     return result
   }
 
-  createAccessToken = ({ userId, isEmailVerified }: { userId: string; isEmailVerified: boolean }) => {
-    const accessToken = signToken({
+  createAccessToken = async ({ userId, isEmailVerified }: { userId: string; isEmailVerified: boolean }) => {
+    const accessToken = await signToken({
       payload: { userId, isEmailVerified },
       optional: { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME }
     })
@@ -48,12 +48,14 @@ class UserService {
     exp?: number
   }) => {
     if (exp) {
-      const refreshToken = signToken({
+      const refreshToken = await signToken({
         payload: { userId, isEmailVerified, exp }
       })
+
+      return refreshToken
     }
 
-    const refreshToken = signToken({
+    const refreshToken = await signToken({
       payload: { userId, isEmailVerified },
       optional: { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME }
     })
@@ -81,9 +83,10 @@ class UserService {
   }
 
   async login({ userId, isEmailVerified }: { userId: ObjectId; isEmailVerified: boolean }) {
-    const accessToken = this.createAccessToken({ userId: userId.toString(), isEmailVerified })
-    const refreshToken = await this.createRefreshToken({ userId: userId.toString(), isEmailVerified })
-
+    const [accessToken, refreshToken] = await Promise.all([
+      this.createAccessToken({ userId: userId.toString(), isEmailVerified }),
+      this.createRefreshToken({ userId: userId.toString(), isEmailVerified })
+    ])
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({ userId: new ObjectId(userId), token: refreshToken })
     )

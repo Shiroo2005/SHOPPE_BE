@@ -11,6 +11,12 @@ export const signToken = ({
   optional?: SignOptions
 }) => {
   optional = { ...optional, algorithm: 'HS256' }
-  const token = jwt.sign(payload, secretOrPrivateKey, optional)
-  return token
+  return new Promise<string>((resolve, reject) => {
+    jwt.sign(payload, secretOrPrivateKey, optional, (err, token) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(token as string)
+    })
+  })
 }
