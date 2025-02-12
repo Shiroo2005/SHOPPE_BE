@@ -33,5 +33,8 @@ export const loginController = async (
     userId: user._id as ObjectId,
     isEmailVerified: user.isEmailVerified
   })
-  res.json({ result })
+  res.json({
+    message: RESPONSE_MESSAGES.LOGIN_SUCCESS,
+    result
+  })
 }

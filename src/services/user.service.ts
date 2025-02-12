@@ -74,8 +74,6 @@ class UserService {
     password: string
     fullName: string
   }) {
-    console.log(email, username, password, fullName)
-
     const result = await databaseService.users.insertOne(
       new User({ email, username, password: hashPassword(password), fullName })
     )
