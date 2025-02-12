@@ -29,6 +29,7 @@ export const VALIDATE_MESSAGES = {
   REFRESH_TOKEN_REQUIRED: 'Refresh token is required',
   REFRESH_TOKEN_EXPIRED: 'Refresh token expired',
   REFRESH_ACCESS_TOKEN_NOT_MATCH: 'Refresh token not match with access token',
+  REFRESH_TOKEN_INVALID: 'Refresh token is invalid',
 
   //VALIDATION
   VALIDATE_ERROR: 'Validate error'

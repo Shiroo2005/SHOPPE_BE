@@ -90,6 +90,16 @@ class UserService {
     )
     return { accessToken, refreshToken }
   }
+
+  async logout({ refreshToken }: { refreshToken: string }) {
+    const result = await databaseService.refreshTokens.deleteOne({ token: refreshToken })
+    return result
+  }
+
+  async isExistRefreshTokenInDb({ refreshToken }: { refreshToken: string }) {
+    const result = await databaseService.refreshTokens.findOne({ token: refreshToken })
+    return result
+  }
 }
 
 const userService = new UserService()

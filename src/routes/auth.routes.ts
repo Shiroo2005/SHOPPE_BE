@@ -1,5 +1,5 @@
 import express from 'express'
-import { loginController, registerController } from '~/controllers/auth.controller'
+import { loginController, logoutController, registerController } from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
   loginValidator,
@@ -33,6 +33,6 @@ authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
   Header: {authorization: Bearer <accessToken>}
   Body: {refresh token: string}
 */
-authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(loginController))
+authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
 
 export default authRouter

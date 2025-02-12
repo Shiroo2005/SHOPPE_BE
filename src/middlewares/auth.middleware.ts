@@ -3,7 +3,7 @@ import { checkSchema } from 'express-validator'
 import { HTTP_STATUS } from '~/constants/http_status'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
-import { LoginReqBody } from '~/models/req/LoginReqBody'
+import { LoginReqBody } from '~/models/req/auth/LoginReqBody'
 import userService from '~/services/user.service'
 import { validate } from '~/utils/custom_validation'
 import { verifyToken } from '~/utils/jwt'
@@ -146,8 +146,16 @@ export const refreshTokenValidator = validate(
             const refreshToken = value.trim()
 
             try {
-              const decodedRefreshToken = await verifyToken({ token: refreshToken })
-              console.log(decodedRefreshToken)
+              const [decodedRefreshToken, tokenInDb] = await Promise.all([
+                verifyToken({ token: refreshToken }),
+                userService.isExistRefreshTokenInDb({ refreshToken })
+              ])
+
+              if (!tokenInDb)
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.REFRESH_TOKEN_INVALID,
+                  status: HTTP_STATUS.BAD_REQUEST
+                })
               ;(req as Request).decodedRefreshToken = decodedRefreshToken
             } catch (error) {
               if (error === 'jwt expired')
