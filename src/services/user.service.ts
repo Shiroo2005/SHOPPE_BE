@@ -7,6 +7,67 @@ import { config } from 'dotenv'
 import { RefreshToken } from '~/models/schemas/refreshToken.schema'
 config()
 class UserService {
+  async register({
+    email,
+    username,
+    password,
+    fullName
+  }: {
+    email: string
+    username: string
+    password: string
+    fullName: string
+  }) {
+    const result = await databaseService.users.insertOne(
+      new User({ email, username, password: hashPassword(password), fullName })
+    )
+    return result
+  }
+
+  async login({ userId, isEmailVerified }: { userId: ObjectId; isEmailVerified: boolean }) {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.createAccessToken({ userId: userId.toString(), isEmailVerified }),
+      this.createRefreshToken({ userId: userId.toString(), isEmailVerified })
+    ])
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ userId: new ObjectId(userId), token: refreshToken })
+    )
+    return { accessToken, refreshToken }
+  }
+
+  async logout({ refreshToken }: { refreshToken: string }) {
+    const result = await databaseService.refreshTokens.deleteOne({ token: refreshToken })
+    return result
+  }
+
+  async newToken({
+    userId,
+    exp,
+    isEmailVerified,
+    refreshToken
+  }: {
+    userId: string
+    isEmailVerified: boolean
+    refreshToken: string
+    exp: number
+  }) {
+    const [newAccessToken, newRefreshToken] = await Promise.all([
+      this.createAccessToken({ userId, isEmailVerified }),
+      this.createRefreshToken({ userId, isEmailVerified, exp }),
+      databaseService.refreshTokens.deleteOne({ token: refreshToken })
+    ])
+
+    await databaseService.refreshTokens.insertOne(
+      new RefreshToken({ userId: new ObjectId(userId), token: newRefreshToken })
+    )
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken }
+  }
+
+  async isExistRefreshTokenInDb({ refreshToken }: { refreshToken: string }) {
+    const result = await databaseService.refreshTokens.findOne({ token: refreshToken })
+    return result
+  }
+
   async findByEmailOrUsername({ email, username }: { email: string; username: string }) {
     const result = await databaseService.users.findOne({
       $or: [{ email }, { username }]
@@ -61,44 +122,6 @@ class UserService {
     })
 
     return refreshToken
-  }
-
-  async register({
-    email,
-    username,
-    password,
-    fullName
-  }: {
-    email: string
-    username: string
-    password: string
-    fullName: string
-  }) {
-    const result = await databaseService.users.insertOne(
-      new User({ email, username, password: hashPassword(password), fullName })
-    )
-    return result
-  }
-
-  async login({ userId, isEmailVerified }: { userId: ObjectId; isEmailVerified: boolean }) {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.createAccessToken({ userId: userId.toString(), isEmailVerified }),
-      this.createRefreshToken({ userId: userId.toString(), isEmailVerified })
-    ])
-    await databaseService.refreshTokens.insertOne(
-      new RefreshToken({ userId: new ObjectId(userId), token: refreshToken })
-    )
-    return { accessToken, refreshToken }
-  }
-
-  async logout({ refreshToken }: { refreshToken: string }) {
-    const result = await databaseService.refreshTokens.deleteOne({ token: refreshToken })
-    return result
-  }
-
-  async isExistRefreshTokenInDb({ refreshToken }: { refreshToken: string }) {
-    const result = await databaseService.refreshTokens.findOne({ token: refreshToken })
-    return result
   }
 }
 
