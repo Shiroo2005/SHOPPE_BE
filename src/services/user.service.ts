@@ -10,6 +10,21 @@ class UserService {
     return result
   }
 
+  async authenticate(username: string, password: string) {
+    const result = await databaseService.users.findOne({
+      $or: [
+        {
+          $and: [{ username: username, password }]
+        },
+        {
+          $and: [{ email: username, password }]
+        }
+      ]
+    })
+
+    return result
+  }
+
   async register({
     email,
     username,

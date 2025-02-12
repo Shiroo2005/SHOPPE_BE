@@ -2,6 +2,7 @@ import { checkSchema } from 'express-validator'
 import { HTTP_STATUS } from '~/constants/http_status'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
+import { LoginReqBody } from '~/models/req/LoginReqBody'
 import userService from '~/services/user.service'
 import { validate } from '~/utils/custom_validation'
 
@@ -66,4 +67,27 @@ export const registerValidator = validate(
     },
     ['body']
   )
+)
+
+export const loginValidator = validate(
+  checkSchema({
+    username: {
+      trim: true,
+      notEmpty: {
+        errorMessage: VALIDATE_MESSAGES.USERNAME_REQUIRED
+      }
+    },
+    password: {
+      notEmpty: {
+        errorMessage: VALIDATE_MESSAGES.PASSWORD_REQUIRED
+      },
+      custom: {
+        options: async (value, { req }) => {
+          const result = await userService.authenticate(value, (req.body as LoginReqBody).password)
+          if (!result)
+            throw new ErrorWithStatus({ message: VALIDATE_MESSAGES.LOGIN_FAILED, status: HTTP_STATUS.BAD_REQUEST })
+        }
+      }
+    }
+  })
 )
