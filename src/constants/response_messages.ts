@@ -3,5 +3,8 @@ export const RESPONSE_MESSAGES = {
   REGISTER_SUCCESS: 'Register successful',
 
   // Login
-  LOGIN_SUCCESS: 'Login successful'
+  LOGIN_SUCCESS: 'Login successful',
+
+  // logout
+  LOGOUT_SUCCESS: 'Logout successful'
 }

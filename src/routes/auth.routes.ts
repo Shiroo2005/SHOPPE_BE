@@ -1,6 +1,11 @@
 import express from 'express'
-import { loginController, registerController } from '~/controllers/auth.controller'
-import { loginValidator, registerValidator } from '~/middlewares/auth.middleware'
+import { loginController, logoutController, registerController } from '~/controllers/auth.controller'
+import {
+  accessTokenValidator,
+  loginValidator,
+  refreshTokenValidator,
+  registerValidator
+} from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handler'
 
 const authRouter = express.Router()
@@ -20,5 +25,14 @@ authRouter.post('/register', registerValidator, wrapRequestHandler(registerContr
   username body = username or email in user
 */
 authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
+
+/*
+  Description: Logout user
+  Method: POST
+  Path: /logout
+  Header: {authorization: Bearer <accessToken>}
+  Body: {refresh token: string}
+*/
+authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
 
 export default authRouter
