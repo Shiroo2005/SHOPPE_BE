@@ -21,6 +21,15 @@ export const VALIDATE_MESSAGES = {
   //Login
   LOGIN_FAILED: 'Username or password is incorrect',
 
+  // ACCESS TOKEN
+  ACCESS_TOKEN_INVALID: 'Access token is invalid',
+  ACCESS_TOKEN_EXPIRED: 'Access token expired',
+
+  // REFRESH TOKEN
+  REFRESH_TOKEN_REQUIRED: 'Refresh token is required',
+  REFRESH_TOKEN_EXPIRED: 'Refresh token expired',
+  REFRESH_ACCESS_TOKEN_NOT_MATCH: 'Refresh token not match with access token',
+
   //VALIDATION
   VALIDATE_ERROR: 'Validate error'
 }

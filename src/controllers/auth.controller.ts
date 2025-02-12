@@ -27,7 +27,6 @@ export const loginController = async (
   next: NextFunction
 ) => {
   const user = req.user as User
-  console.log(user)
 
   const result = await userService.login({
     userId: user._id as ObjectId,

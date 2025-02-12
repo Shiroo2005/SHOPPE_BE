@@ -6,6 +6,7 @@ import { ErrorWithStatus } from '~/models/error'
 import { LoginReqBody } from '~/models/req/LoginReqBody'
 import userService from '~/services/user.service'
 import { validate } from '~/utils/custom_validation'
+import { verifyToken } from '~/utils/jwt'
 
 export const registerValidator = validate(
   checkSchema(
@@ -38,6 +39,7 @@ export const registerValidator = validate(
                 message: VALIDATE_MESSAGES.EMAIL_OR_USERNAME_EXISTS,
                 status: HTTP_STATUS.BAD_REQUEST
               })
+            return true
           }
         }
       },
@@ -71,25 +73,105 @@ export const registerValidator = validate(
 )
 
 export const loginValidator = validate(
-  checkSchema({
-    username: {
-      trim: true,
-      notEmpty: {
-        errorMessage: VALIDATE_MESSAGES.USERNAME_REQUIRED
-      }
-    },
-    password: {
-      notEmpty: {
-        errorMessage: VALIDATE_MESSAGES.PASSWORD_REQUIRED
+  checkSchema(
+    {
+      username: {
+        trim: true,
+        notEmpty: {
+          errorMessage: VALIDATE_MESSAGES.USERNAME_REQUIRED
+        }
       },
-      custom: {
-        options: async (value, { req }) => {
-          const result = await userService.authenticate((req.body as LoginReqBody).username, value)
-          if (!result)
-            throw new ErrorWithStatus({ message: VALIDATE_MESSAGES.LOGIN_FAILED, status: HTTP_STATUS.BAD_REQUEST })
-          ;(req as Request).user = result
+      password: {
+        notEmpty: {
+          errorMessage: VALIDATE_MESSAGES.PASSWORD_REQUIRED
+        },
+        custom: {
+          options: async (value, { req }) => {
+            const result = await userService.authenticate((req.body as LoginReqBody).username, value)
+            if (!result)
+              throw new ErrorWithStatus({ message: VALIDATE_MESSAGES.LOGIN_FAILED, status: HTTP_STATUS.BAD_REQUEST })
+            ;(req as Request).user = result
+            return true
+          }
         }
       }
-    }
-  })
+    },
+    ['body']
+  )
+)
+
+export const accessTokenValidator = validate(
+  checkSchema(
+    {
+      authorization: {
+        custom: {
+          options: async (value: string, { req }) => {
+            const accessToken = value.split(' ')[1].trim()
+
+            if (accessToken === '') {
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.ACCESS_TOKEN_INVALID,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+            try {
+              const decodedAuthorization = await verifyToken({ token: accessToken })
+              ;(req as Request).decodedAuthorization = decodedAuthorization
+            } catch (error) {
+              if (error === 'jwt expired')
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.ACCESS_TOKEN_EXPIRED,
+                  status: HTTP_STATUS.UNAUTHORIZED
+                })
+              throw error
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['headers']
+  )
+)
+
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refreshToken: {
+        notEmpty: {
+          errorMessage: VALIDATE_MESSAGES.REFRESH_TOKEN_REQUIRED
+        },
+        custom: {
+          options: async (value: string, { req }) => {
+            const refreshToken = value.trim()
+
+            try {
+              const decodedRefreshToken = await verifyToken({ token: refreshToken })
+              console.log(decodedRefreshToken)
+              ;(req as Request).decodedRefreshToken = decodedRefreshToken
+            } catch (error) {
+              if (error === 'jwt expired')
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.REFRESH_TOKEN_EXPIRED,
+                  status: HTTP_STATUS.BAD_REQUEST
+                })
+              throw error
+            }
+
+            //check access token whether match refresh token
+            const decodedAuthorization = (req as Request).decodedAuthorization
+            const decodedRefreshToken = (req as Request).decodedRefreshToken
+            if (decodedAuthorization && decodedAuthorization.userId != decodedRefreshToken?.userId)
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.REFRESH_ACCESS_TOKEN_NOT_MATCH,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
 )
