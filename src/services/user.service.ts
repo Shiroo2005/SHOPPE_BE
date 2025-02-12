@@ -1,5 +1,6 @@
 import { User } from '~/models/schemas/user.schema'
 import databaseService from './database.service'
+import { hashPassword } from '~/utils/crypto'
 
 class UserService {
   async findByEmailOrUsername({ email, username }: { email: string; username: string }) {
@@ -38,7 +39,9 @@ class UserService {
   }) {
     console.log(email, username, password, fullName)
 
-    const result = await databaseService.users.insertOne(new User({ email, username, password, fullName }))
+    const result = await databaseService.users.insertOne(
+      new User({ email, username, password: hashPassword(password), fullName })
+    )
     return result
   }
 }
