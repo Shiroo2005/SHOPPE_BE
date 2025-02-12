@@ -1,10 +1,24 @@
 import express from 'express'
-import { authController } from '~/controllers/auth.controller'
-import { registerValidator } from '~/middlewares/auth.middleware'
+import { loginController, registerController } from '~/controllers/auth.controller'
+import { loginValidator, registerValidator } from '~/middlewares/auth.middleware'
 import { wrapRequestHandler } from '~/utils/handler'
 
 const authRouter = express.Router()
+/*
+  Description: Register new user
+  Method: POST
+  Path: /register
+  Body: {email: string, username: string, password: string,  fullName: string}
+*/
+authRouter.post('/register', registerValidator, wrapRequestHandler(registerController))
 
-authRouter.post('/register', registerValidator, wrapRequestHandler(authController))
+/*
+  Description: Login user
+  Method: POST
+  Path: /login
+  Body: {username: string, password: string}
+  username body = username or email in user
+*/
+authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 export default authRouter

@@ -10,7 +10,7 @@ interface UserConstructor {
   password: string
   fullName: string
   phoneNumber?: string
-  emailVerified?: boolean
+  isEmailVerified?: boolean
   gender?: GENDER
   dob?: Date
   avatar?: string
@@ -28,7 +28,7 @@ export class User {
   password: string
   fullName: string
   phoneNumber: string
-  emailVerified: boolean
+  isEmailVerified: boolean
   gender: GENDER
   dob: Date
   avatar: string
@@ -46,7 +46,7 @@ export class User {
     this.username = user.username
     this.password = user.password
     this.phoneNumber = user.phoneNumber || ''
-    this.emailVerified = user.emailVerified || false
+    this.isEmailVerified = user.isEmailVerified || false
     this.gender = user.gender || GENDER.OTHER
     this.avatar = user.avatar || ''
     this.deliveryAddress = user.deliveryAddress

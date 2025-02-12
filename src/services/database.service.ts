@@ -1,5 +1,7 @@
 import { config } from 'dotenv'
-import { Db, MongoClient } from 'mongodb'
+import { Collection, Db, MongoClient } from 'mongodb'
+import { RefreshToken } from '~/models/schemas/refreshToken.schema'
+import { User } from '~/models/schemas/user.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@shoppe.68c4b.mongodb.net/?retryWrites=true&w=majority&appName=Shoppe`
@@ -18,8 +20,12 @@ class DatabaseService {
     console.log('Connected successfully to server')
   }
 
-  get users() {
+  get users(): Collection<User> {
     return this.db.collection(process.env.DB_USER as string)
+  }
+
+  get refreshTokens(): Collection<RefreshToken> {
+    return this.db.collection(process.env.DB_REFRESH_TOKEN as string)
   }
 }
 
