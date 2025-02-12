@@ -68,3 +68,17 @@ export const newTokenController = async (
     result
   })
 }
+
+export const getAccountController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = (req as Request).decodedAuthorization as TokenPayload
+
+  const result = await userService.getAccount({ userId })
+  res.json({
+    message: RESPONSE_MESSAGES.GET_ACCOUNT_SUCCESS,
+    result
+  })
+}

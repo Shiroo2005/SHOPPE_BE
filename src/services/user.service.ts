@@ -5,6 +5,7 @@ import { ObjectId } from 'mongodb'
 import { signToken } from '~/utils/jwt'
 import { config } from 'dotenv'
 import { RefreshToken } from '~/models/schemas/refreshToken.schema'
+import { GetAccountRes } from '~/models/res/auth/GetAccountRes'
 config()
 class UserService {
   async register({
@@ -61,6 +62,12 @@ class UserService {
       new RefreshToken({ userId: new ObjectId(userId), token: newRefreshToken })
     )
     return { accessToken: newAccessToken, refreshToken: newRefreshToken }
+  }
+
+  async getAccount({ userId }: { userId: string }) {
+    const user = await databaseService.users.findOne({ _id: new ObjectId(userId) })
+    const account = new GetAccountRes(user as User)
+    return account
   }
 
   async isExistRefreshTokenInDb({ refreshToken }: { refreshToken: string }) {
