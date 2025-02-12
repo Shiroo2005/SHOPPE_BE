@@ -1,5 +1,6 @@
 import express from 'express'
 import {
+  getAccountController,
   loginController,
   logoutController,
   newTokenController,
@@ -47,5 +48,12 @@ authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequ
   Body: {refresh token: string}
 */
 authRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(newTokenController))
+
+/*
+  Description: Get info account
+  Method: POST
+  Header: {authorization: Bearer <accessToken>}
+*/
+authRouter.get('/account', accessTokenValidator, wrapRequestHandler(getAccountController))
 
 export default authRouter

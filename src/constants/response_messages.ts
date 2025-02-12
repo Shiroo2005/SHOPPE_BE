@@ -9,5 +9,8 @@ export const RESPONSE_MESSAGES = {
   LOGOUT_SUCCESS: 'Logout successful',
 
   //New token
-  NEW_TOKEN_SUCCESS: 'Get new token successful'
+  NEW_TOKEN_SUCCESS: 'Get new token successful',
+
+  //Get info account
+  GET_ACCOUNT_SUCCESS: 'Get account successful'
 }
