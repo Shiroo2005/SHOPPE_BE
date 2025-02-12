@@ -1,3 +1,4 @@
+import { Request } from 'express'
 import { checkSchema } from 'express-validator'
 import { HTTP_STATUS } from '~/constants/http_status'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
@@ -83,9 +84,10 @@ export const loginValidator = validate(
       },
       custom: {
         options: async (value, { req }) => {
-          const result = await userService.authenticate(value, (req.body as LoginReqBody).password)
+          const result = await userService.authenticate((req.body as LoginReqBody).username, value)
           if (!result)
             throw new ErrorWithStatus({ message: VALIDATE_MESSAGES.LOGIN_FAILED, status: HTTP_STATUS.BAD_REQUEST })
+          ;(req as Request).user = result
         }
       }
     }
