@@ -1,10 +1,10 @@
 import express from 'express'
-import { loginValidator } from '~/middlewares/auth.middleware'
+import { authController } from '~/controllers/auth.controller'
+import { registerValidator } from '~/middlewares/auth.middleware'
+import { wrapRequestHandler } from '~/utils/handler'
 
 const authRouter = express.Router()
 
-authRouter.get('/', loginValidator, (req, res) => {
-  res.send('hello world')
-})
+authRouter.post('/register', registerValidator, wrapRequestHandler(authController))
 
 export default authRouter

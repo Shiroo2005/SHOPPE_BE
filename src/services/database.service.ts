@@ -17,7 +17,11 @@ class DatabaseService {
     await this.client.connect()
     console.log('Connected successfully to server')
   }
+
+  get users() {
+    return this.db.collection(process.env.DB_USER as string)
+  }
 }
 
-const databaseSerice = new DatabaseService()
-export default databaseSerice
+const databaseService = new DatabaseService()
+export default databaseService
