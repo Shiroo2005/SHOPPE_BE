@@ -6,5 +6,8 @@ export const RESPONSE_MESSAGES = {
   LOGIN_SUCCESS: 'Login successful',
 
   // logout
-  LOGOUT_SUCCESS: 'Logout successful'
+  LOGOUT_SUCCESS: 'Logout successful',
+
+  //New token
+  NEW_TOKEN_SUCCESS: 'Get new token successful'
 }

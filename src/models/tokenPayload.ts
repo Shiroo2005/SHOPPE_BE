@@ -6,5 +6,4 @@ export interface TokenPayload extends JwtPayload {
   token_type: TOKEN_TYPE
   isEmailVerified: boolean
   exp: number
-  iat: number
 }

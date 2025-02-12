@@ -1,5 +1,10 @@
 import express from 'express'
-import { loginController, logoutController, registerController } from '~/controllers/auth.controller'
+import {
+  loginController,
+  logoutController,
+  newTokenController,
+  registerController
+} from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
   loginValidator,
@@ -34,5 +39,13 @@ authRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
   Body: {refresh token: string}
 */
 authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+
+/*
+  Description: Get new token
+  Method: POST
+  Header: {authorization: Bearer <accessToken>}
+  Body: {refresh token: string}
+*/
+authRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(newTokenController))
 
 export default authRouter
