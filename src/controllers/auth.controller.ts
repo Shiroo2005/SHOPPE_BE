@@ -92,7 +92,6 @@ export const loginGoogleController = async (
   next: NextFunction
 ) => {
   const code = req.query.code
-  if (!code) res.json({ message: RESPONSE_MESSAGES.LOGIN_GOOGLE_FAILED })
 
   const tokenResponse = await axios.post(process.env.GOOGLE_TOKEN_URL as string, null, {
     params: {

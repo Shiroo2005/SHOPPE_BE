@@ -15,7 +15,7 @@ export const RESPONSE_MESSAGES = {
   GET_ACCOUNT_SUCCESS: 'Get account successful',
 
   //Code not found
-  LOGIN_GOOGLE_FAILED: 'Code not found',
+  CODE_LOGIN_GOOGLE_NOT_FOUND: 'Code login google not found or invalid',
 
   //Login by google success
   LOGIN_GOOGLE_SUCCESS: 'Login by google successful'
