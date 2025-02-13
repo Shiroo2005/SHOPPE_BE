@@ -1,6 +1,7 @@
 import { Request } from 'express'
 import { checkSchema } from 'express-validator'
 import { HTTP_STATUS } from '~/constants/http_status'
+import { RESPONSE_MESSAGES } from '~/constants/response_messages'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
 import { LoginReqBody } from '~/models/req/auth/LoginReqBody'
@@ -181,5 +182,18 @@ export const refreshTokenValidator = validate(
       }
     },
     ['body']
+  )
+)
+
+export const loginByGoogleValidator = validate(
+  checkSchema(
+    {
+      code: {
+        notEmpty: {
+          errorMessage: RESPONSE_MESSAGES.CODE_LOGIN_GOOGLE_NOT_FOUND
+        }
+      }
+    },
+    ['query']
   )
 )

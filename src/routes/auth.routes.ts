@@ -2,6 +2,7 @@ import express from 'express'
 import {
   getAccountController,
   loginController,
+  loginGoogleController,
   logoutController,
   newTokenController,
   registerController
@@ -55,5 +56,13 @@ authRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(newT
   Header: {authorization: Bearer <accessToken>}
 */
 authRouter.get('/account', accessTokenValidator, wrapRequestHandler(getAccountController))
+
+/*
+  Description: Login with google
+  Method: POST
+  Query: {code : string}
+  // if email not exist any user in db, will create new user with its mail
+*/
+authRouter.get('/login-google', wrapRequestHandler(loginGoogleController))
 
 export default authRouter
