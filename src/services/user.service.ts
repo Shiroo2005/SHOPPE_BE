@@ -1,6 +1,6 @@
 import { User } from '~/models/schemas/user.schema'
 import databaseService from './database.service'
-import { hashPassword } from '~/utils/crypto'
+import { generateRandomPassword, generateRandomUsername, hashPassword } from '~/utils/crypto'
 import { ObjectId } from 'mongodb'
 import { signToken } from '~/utils/jwt'
 import { config } from 'dotenv'
@@ -68,6 +68,24 @@ class UserService {
     const user = await databaseService.users.findOne({ _id: new ObjectId(userId) })
     const account = new GetAccountRes(user as User)
     return account
+  }
+
+  async loginByGoogle({ email, fullName, avatar }: { email: string; fullName: string; avatar: string }) {
+    const userInDb = await databaseService.users.findOne({ email })
+    if (userInDb) return this.login({ userId: userInDb._id, isEmailVerified: userInDb.isEmailVerified })
+    else {
+      const user = new User({
+        email,
+        fullName,
+        password: generateRandomPassword(),
+        username: generateRandomUsername(),
+        avatar
+      })
+
+      const res = await databaseService.users.insertOne(user)
+
+      return this.login({ userId: res.insertedId, isEmailVerified: user.isEmailVerified })
+    }
   }
 
   async isExistRefreshTokenInDb({ refreshToken }: { refreshToken: string }) {

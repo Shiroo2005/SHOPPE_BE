@@ -1,5 +1,6 @@
 import { config } from 'dotenv'
 import jwt, { SignOptions } from 'jsonwebtoken'
+import { DecodedGoogleToken } from '~/models/req/auth/DecodedGoogleToken'
 import { TokenPayload } from '~/models/tokenPayload'
 config()
 export const signToken = ({
@@ -37,4 +38,9 @@ export const verifyToken = ({
       resolve(decoded as TokenPayload)
     })
   })
+}
+
+export const decodeToken = (token: string) => {
+  const { email, name, picture } = jwt.decode(token) as DecodedGoogleToken
+  return { email, name, picture }
 }

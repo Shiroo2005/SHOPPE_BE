@@ -1,7 +1,10 @@
+import axios, { options } from 'axios'
+import { config } from 'dotenv'
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { RESPONSE_MESSAGES } from '~/constants/response_messages'
+import { DecodedGoogleToken } from '~/models/req/auth/DecodedGoogleToken'
 import { LoginReqBody } from '~/models/req/auth/LoginReqBody'
 import { LogoutReqBody } from '~/models/req/auth/LogoutReqBody'
 import { NewTokenReqBody } from '~/models/req/auth/NewTokenReqBody'
@@ -9,8 +12,8 @@ import { RegisterReqBody } from '~/models/req/auth/RegisterReqBody'
 import { User } from '~/models/schemas/user.schema'
 import { TokenPayload } from '~/models/tokenPayload'
 import userService from '~/services/user.service'
-import { signToken } from '~/utils/jwt'
-
+import { decodeToken, signToken } from '~/utils/jwt'
+config()
 export const registerController = async (
   req: Request<ParamsDictionary, any, RegisterReqBody>,
   res: Response,
@@ -81,4 +84,39 @@ export const getAccountController = async (
     message: RESPONSE_MESSAGES.GET_ACCOUNT_SUCCESS,
     result
   })
+}
+
+export const loginGoogleController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const code = req.query.code
+  if (!code) res.json({ message: RESPONSE_MESSAGES.LOGIN_GOOGLE_FAILED })
+
+  const tokenResponse = await axios.post(process.env.GOOGLE_TOKEN_URL as string, null, {
+    params: {
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
+      redirect_uri: process.env.REDIRECT_URI,
+      grant_type: 'authorization_code',
+      code: code
+    },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+
+  const { id_token } = tokenResponse.data
+
+  const data = decodeToken(id_token) as DecodedGoogleToken
+
+  const result = await userService.loginByGoogle({ email: data.email, fullName: data.name, avatar: data.picture })
+  // res.json({
+  //   message: RESPONSE_MESSAGES.LOGIN_GOOGLE_SUCCESS,
+  //   result
+  // })
+
+  res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 80 * 1000 }) // 7d expire
+  res.cookie('refreshToken', result.refreshToken)
+
+  res.redirect(process.env.FE_URL as string)
 }

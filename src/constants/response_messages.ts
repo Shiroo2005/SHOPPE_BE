@@ -12,5 +12,11 @@ export const RESPONSE_MESSAGES = {
   NEW_TOKEN_SUCCESS: 'Get new token successful',
 
   //Get info account
-  GET_ACCOUNT_SUCCESS: 'Get account successful'
+  GET_ACCOUNT_SUCCESS: 'Get account successful',
+
+  //Code not found
+  LOGIN_GOOGLE_FAILED: 'Code not found',
+
+  //Login by google success
+  LOGIN_GOOGLE_SUCCESS: 'Login by google successful'
 }
