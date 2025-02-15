@@ -86,6 +86,28 @@ export const getAccountController = async (
   })
 }
 
+// export const loginGoogleController = async (
+//   req: Request<ParamsDictionary, any, any>,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   const url = process.env.GOOGLE_FORWARD_URL
+//   const query = {
+//     client_id: process.env.CLIENT_ID as string,
+//     redirect_uri: process.env.REDIRECT_URI as string,
+//     response_type: process.env.RESPONSE_TYPE as string,
+//     scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'].join(
+//       ' '
+//     )
+//   }
+
+//   const queryString = new URLSearchParams(query)
+
+//   const redirect_url = `${url}?${queryString}`
+
+//   res.redirect(redirect_url)
+// }
+
 export const loginGoogleController = async (
   req: Request<ParamsDictionary, any, any>,
   res: Response,
@@ -109,13 +131,8 @@ export const loginGoogleController = async (
   const data = decodeToken(id_token) as DecodedGoogleToken
 
   const result = await userService.loginByGoogle({ email: data.email, fullName: data.name, avatar: data.picture })
-  // res.json({
-  //   message: RESPONSE_MESSAGES.LOGIN_GOOGLE_SUCCESS,
-  //   result
-  // })
 
-  res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: true, maxAge: 7 * 24 * 60 * 80 * 1000 }) // 7d expire
-  res.cookie('refreshToken', result.refreshToken)
-
-  res.redirect(process.env.FE_URL as string)
+  res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: true, maxAge: 60 * 15 * 1000 }) // 15m expire
+  res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 60 * 60 * 1000 }) // 7d expire
+  res.redirect(`${process.env.FE_URL}/`)
 }

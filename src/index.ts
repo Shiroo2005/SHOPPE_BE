@@ -4,6 +4,7 @@ import { defaultErrorHandler } from './middlewares/error.middleware'
 import databaseService from './services/database.service'
 import { config } from 'dotenv'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 config()
 const app = express()
@@ -18,6 +19,7 @@ app.use(
   })
 )
 
+app.use(cookieParser())
 app.use(express.json())
 
 databaseService.connect()

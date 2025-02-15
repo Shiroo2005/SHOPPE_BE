@@ -102,37 +102,35 @@ export const loginValidator = validate(
 )
 
 export const accessTokenValidator = validate(
-  checkSchema(
-    {
-      authorization: {
-        custom: {
-          options: async (value: string, { req }) => {
-            const accessToken = value.split(' ')[1].trim()
+  checkSchema({
+    accessToken: {
+      custom: {
+        options: async (value: string, { req }) => {
+          const accessToken = value
+          console.log(accessToken)
 
-            if (accessToken === '') {
+          if (accessToken === '') {
+            throw new ErrorWithStatus({
+              message: VALIDATE_MESSAGES.ACCESS_TOKEN_INVALID,
+              status: HTTP_STATUS.UNAUTHORIZED
+            })
+          }
+          try {
+            const decodedAuthorization = await verifyToken({ token: accessToken })
+            ;(req as Request).decodedAuthorization = decodedAuthorization
+          } catch (error) {
+            if (error === 'jwt expired')
               throw new ErrorWithStatus({
-                message: VALIDATE_MESSAGES.ACCESS_TOKEN_INVALID,
+                message: VALIDATE_MESSAGES.ACCESS_TOKEN_EXPIRED,
                 status: HTTP_STATUS.UNAUTHORIZED
               })
-            }
-            try {
-              const decodedAuthorization = await verifyToken({ token: accessToken })
-              ;(req as Request).decodedAuthorization = decodedAuthorization
-            } catch (error) {
-              if (error === 'jwt expired')
-                throw new ErrorWithStatus({
-                  message: VALIDATE_MESSAGES.ACCESS_TOKEN_EXPIRED,
-                  status: HTTP_STATUS.UNAUTHORIZED
-                })
-              throw error
-            }
-            return true
+            throw error
           }
+          return true
         }
       }
-    },
-    ['headers']
-  )
+    }
+  })
 )
 
 export const refreshTokenValidator = validate(
@@ -181,7 +179,7 @@ export const refreshTokenValidator = validate(
         }
       }
     },
-    ['body']
+    ['cookies']
   )
 )
 

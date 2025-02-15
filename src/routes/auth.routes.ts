@@ -57,8 +57,16 @@ authRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(newT
 */
 authRouter.get('/account', accessTokenValidator, wrapRequestHandler(getAccountController))
 
+// /*
+//   Description: Login with google client, get code from google
+//   Method: POST
+//   Query: {code : string}
+//   // if email not exist any user in db, will create new user with its mail
+// */
+// authRouter.get('/login-google', wrapRequestHandler(loginGoogleController))
+
 /*
-  Description: Login with google
+  Description: Login with google callback
   Method: POST
   Query: {code : string}
   // if email not exist any user in db, will create new user with its mail

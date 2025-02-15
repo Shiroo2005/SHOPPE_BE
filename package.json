@@ -32,11 +32,13 @@
     "typescript-eslint": "^8.23.0"
   },
   "dependencies": {
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/lodash": "^4.17.15",
     "axios": "^1.7.9",
     "be": "file:",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
