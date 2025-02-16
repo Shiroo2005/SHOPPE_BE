@@ -24,5 +24,6 @@ export const RESPONSE_MESSAGES = {
   UPLOAD_IMAGE_SUCCESS: 'Upload image successful',
 
   //Category
-  CATEGORY_CREATE_SUCCESS: 'Create category successful'
+  CATEGORY_CREATE_SUCCESS: 'Create category successful',
+  CATEGORY_UPDATE_SUCCESS: 'Update category successful'
 }

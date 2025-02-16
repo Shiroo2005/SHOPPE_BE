@@ -11,7 +11,7 @@ interface CategoryConstructor {
 
 export class Category {
   _id?: ObjectId
-  parentId?: ObjectId
+  parentId?: ObjectId | null
   name: string
   image: string
   createdAt?: Date

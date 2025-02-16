@@ -5,47 +5,50 @@ import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
 import categoryService from '~/services/category.service'
 import { validate } from '~/utils/custom_validation'
+import { validateId, validateImage, validateName, validateParentId } from './fieldValidations/category.common'
+import { UpdateReqBody } from '~/models/req/category/UpdateReqBody'
 
 export const createCategoryValidator = validate(
-  checkSchema({
-    parentId: {
-      custom: {
-        options: async (value: string, { req }) => {
-          if (!value) return true
-          if (!ObjectId.isValid(value))
-            throw new ErrorWithStatus({
-              message: VALIDATE_MESSAGES.PARENT_ID_INVALID,
-              status: HTTP_STATUS.UNPROCESSABLE_ENTITY
-            })
-          const result = await categoryService.findById(new ObjectId(value))
-          if (!result)
-            throw new ErrorWithStatus({
-              message: VALIDATE_MESSAGES.PARENT_ID_NOT_FOUND,
-              status: HTTP_STATUS.BAD_REQUEST
-            })
-          return true
+  checkSchema(
+    {
+      parentId: validateParentId,
+      name: validateName,
+      image: validateImage
+    },
+    ['body']
+  )
+)
+
+export const updateCategoryValidator = validate(
+  checkSchema(
+    {
+      parentId: validateParentId,
+      name: validateName,
+      image: validateImage
+    },
+    ['body']
+  )
+)
+
+export const IdCategoryURLValidator = validate(
+  checkSchema(
+    {
+      id: {
+        custom: {
+          options: (value, { req }) => {
+            const id = value
+            const { parentId } = req.body as UpdateReqBody
+            if (id === parentId)
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.CATEGORY_ID_MUST_DIFFERENT_PARENT_ID,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            validateId(id)
+            return true
+          }
         }
       }
     },
-    name: {
-      trim: true,
-      notEmpty: {
-        errorMessage: VALIDATE_MESSAGES.CATEGORY_NAME_REQUIRED
-      },
-      matches: {
-        options: /^(?=.*[a-zA-Z])[a-zA-Z0-9& ]{4,20}$/,
-        errorMessage: VALIDATE_MESSAGES.CATEGORY_NAME_INVALID
-      }
-    },
-    image: {
-      trim: true,
-      isURL: {
-        errorMessage: VALIDATE_MESSAGES.INVALID_URL
-      },
-      matches: {
-        options: /\.(jpeg|jpg|png|gif|webp)$/i,
-        errorMessage: VALIDATE_MESSAGES.IMAGE_URL_INVALID_FORMAT
-      }
-    }
-  })
+    ['params']
+  )
 )

@@ -30,7 +30,7 @@ app.use(express.json())
 databaseService.connect()
 
 app.use('/auth', authRouter)
-app.use('/category', categoryRouter)
+app.use('/categories', categoryRouter)
 app.use('/media', mediaRouter)
 app.use(defaultErrorHandler)
 

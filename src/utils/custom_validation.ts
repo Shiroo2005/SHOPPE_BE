@@ -13,14 +13,12 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
 
     const errorObjects = result.array()
 
-    console.log(errorObjects)
-
     const errors = errorObjects.map((error) => {
       const { msg } = error
       if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_ENTITY) {
         return next(msg)
-      }
-
+      } else if (msg instanceof ErrorWithStatus && msg.status === HTTP_STATUS.UNPROCESSABLE_ENTITY)
+        error.msg = (error.msg as ErrorWithStatus).message
       return error
     })
 

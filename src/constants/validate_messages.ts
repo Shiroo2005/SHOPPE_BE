@@ -35,8 +35,11 @@ export const VALIDATE_MESSAGES = {
   VALIDATE_ERROR: 'Validate error',
 
   //CATEGORY
-  PARENT_ID_INVALID: 'Parent id is invalid',
-  PARENT_ID_NOT_FOUND: 'Parent id not found',
+  CATEGORY_PARENT_ID_INVALID: 'Parent id is invalid',
+  CATEGORY_PARENT_ID_NOT_FOUND: 'Parent id not found',
+  CATEGORY_ID_INVALID: 'Id is invalid',
+  CATEGORY_ID_NOT_FOUND: 'Id not found',
+  CATEGORY_ID_MUST_DIFFERENT_PARENT_ID: 'Id must different with parent id',
 
   //Name Category
   CATEGORY_NAME_REQUIRED: `Name's category is required`,
