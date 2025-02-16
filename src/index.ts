@@ -5,6 +5,7 @@ import databaseService from './services/database.service'
 import { config } from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import categoryRouter from './routes/category.routes'
 
 config()
 const app = express()
@@ -25,6 +26,7 @@ app.use(express.json())
 databaseService.connect()
 
 app.use('/auth', authRouter)
+app.use('/category', categoryRouter)
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
