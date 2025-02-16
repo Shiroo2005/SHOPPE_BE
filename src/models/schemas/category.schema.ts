@@ -14,8 +14,8 @@ export class Category {
   parentId?: ObjectId
   name: string
   image: string
-  createdAt: Date
-  updatedAt: Date
+  createdAt?: Date
+  updatedAt?: Date
   constructor(category: CategoryConstructor) {
     const now = new Date()
     this._id = category._id

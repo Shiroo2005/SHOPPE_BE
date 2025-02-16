@@ -9,17 +9,21 @@ import { validate } from '~/utils/custom_validation'
 export const createCategoryValidator = validate(
   checkSchema({
     parentId: {
-      isMongoId: {
-        errorMessage: VALIDATE_MESSAGES.PARENT_ID_INVALID
-      },
       custom: {
         options: async (value: string, { req }) => {
+          if (!value) return true
+          if (!ObjectId.isValid(value))
+            throw new ErrorWithStatus({
+              message: VALIDATE_MESSAGES.PARENT_ID_INVALID,
+              status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+            })
           const result = await categoryService.findById(new ObjectId(value))
           if (!result)
             throw new ErrorWithStatus({
               message: VALIDATE_MESSAGES.PARENT_ID_NOT_FOUND,
               status: HTTP_STATUS.BAD_REQUEST
             })
+          return true
         }
       }
     },

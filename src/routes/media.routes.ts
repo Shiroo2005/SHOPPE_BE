@@ -1,6 +1,7 @@
 import express from 'express'
 import { uploadImageController } from '~/controllers/media.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
+import { wrapRequestHandler } from '~/utils/handler'
 
 const mediaRouter = express.Router()
 
@@ -14,6 +15,6 @@ const mediaRouter = express.Router()
     parentId: string
   }
 */
-mediaRouter.post('/images', accessTokenValidator, uploadImageController)
+mediaRouter.post('/images', accessTokenValidator, wrapRequestHandler(uploadImageController))
 
 export default mediaRouter

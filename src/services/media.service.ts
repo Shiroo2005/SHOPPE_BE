@@ -20,7 +20,7 @@ class MediaService {
         const media = new Media({
           createdBy: new ObjectId(userId),
           type: MEDIA_TYPE.IMAGE,
-          url: `${process.env.HOST}/static/images/${newName}.jpeg`
+          name: `${newName}.jpeg`
         })
         return media
       })

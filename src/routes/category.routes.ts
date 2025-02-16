@@ -1,4 +1,7 @@
 import express from 'express'
+import { createCategoryController } from '~/controllers/category.controller'
+import { createCategoryValidator } from '~/middlewares/category.middleware'
+import { wrapRequestHandler } from '~/utils/handler'
 
 const categoryRouter = express.Router()
 
@@ -12,8 +15,6 @@ const categoryRouter = express.Router()
     parentId: string
   }
 */
-categoryRouter.post('/', (req, res) => {
-  res.json({ message: 'hello' })
-})
+categoryRouter.post('/', createCategoryValidator, wrapRequestHandler(createCategoryController))
 
 export default categoryRouter

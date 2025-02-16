@@ -21,5 +21,8 @@ export const RESPONSE_MESSAGES = {
   LOGIN_GOOGLE_SUCCESS: 'Login by google successful',
 
   //Upload image success
-  UPLOAD_IMAGE_SUCCESS: 'Upload image successful'
+  UPLOAD_IMAGE_SUCCESS: 'Upload image successful',
+
+  //Category
+  CATEGORY_CREATE_SUCCESS: 'Create category successful'
 }
