@@ -30,7 +30,7 @@ export const updateCategoryValidator = validate(
   )
 )
 
-export const IdCategoryURLValidator = validate(
+export const idCategoryUpdateValidator = validate(
   checkSchema(
     {
       id: {

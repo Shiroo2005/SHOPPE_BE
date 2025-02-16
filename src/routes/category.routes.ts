@@ -1,8 +1,12 @@
 import express from 'express'
-import { createCategoryController, updateCategoryController } from '~/controllers/category.controller'
+import {
+  createCategoryController,
+  getTreeCategoryController,
+  updateCategoryController
+} from '~/controllers/category.controller'
 import {
   createCategoryValidator,
-  IdCategoryURLValidator,
+  idCategoryUpdateValidator,
   updateCategoryValidator
 } from '~/middlewares/category.middleware'
 import { wrapRequestHandler } from '~/utils/handler'
@@ -34,8 +38,10 @@ categoryRouter.post('/', createCategoryValidator, wrapRequestHandler(createCateg
 categoryRouter.put(
   '/:id',
   updateCategoryValidator,
-  IdCategoryURLValidator,
+  idCategoryUpdateValidator,
   wrapRequestHandler(updateCategoryController)
 )
+
+categoryRouter.get('/tree', wrapRequestHandler(getTreeCategoryController))
 
 export default categoryRouter

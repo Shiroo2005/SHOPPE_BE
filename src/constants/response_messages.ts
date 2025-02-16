@@ -25,5 +25,6 @@ export const RESPONSE_MESSAGES = {
 
   //Category
   CATEGORY_CREATE_SUCCESS: 'Create category successful',
-  CATEGORY_UPDATE_SUCCESS: 'Update category successful'
+  CATEGORY_UPDATE_SUCCESS: 'Update category successful',
+  CATEGORY_GET_TREE_SUCCESS: 'Get tree category successful'
 }

@@ -32,3 +32,15 @@ export const updateCategoryController = async (
     result
   })
 }
+
+export const getTreeCategoryController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const result = await categoryService.getCategoryTree()
+  res.json({
+    message: RESPONSE_MESSAGES.CATEGORY_GET_TREE_SUCCESS,
+    result
+  })
+}
