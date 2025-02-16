@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 
 interface CategoryConstructor {
-  id?: ObjectId
+  _id?: ObjectId
   parentId?: ObjectId
   name: string
   image: string
@@ -10,7 +10,7 @@ interface CategoryConstructor {
 }
 
 export class Category {
-  id?: ObjectId
+  _id?: ObjectId
   parentId?: ObjectId
   name: string
   image: string
@@ -18,7 +18,7 @@ export class Category {
   updatedAt: Date
   constructor(category: CategoryConstructor) {
     const now = new Date()
-    this.id = category.id
+    this._id = category._id
     this.parentId = category.parentId
     this.name = category.name
     this.image = category.image

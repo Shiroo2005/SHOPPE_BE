@@ -32,5 +32,16 @@ export const VALIDATE_MESSAGES = {
   REFRESH_TOKEN_INVALID: 'Refresh token is invalid',
 
   //VALIDATION
-  VALIDATE_ERROR: 'Validate error'
+  VALIDATE_ERROR: 'Validate error',
+
+  //CATEGORY
+  PARENT_ID_INVALID: 'Parent id is invalid',
+  PARENT_ID_NOT_FOUND: 'Parent id not found',
+
+  //Name Category
+  CATEGORY_NAME_REQUIRED: `Name's category is required`,
+  CATEGORY_NAME_INVALID: 'Contain only letter and number',
+
+  INVALID_URL: 'Invalid URL format',
+  IMAGE_URL_INVALID_FORMAT: 'Image URL must end with .jpg, .jpeg, .png, .gif, or .webp'
 }
