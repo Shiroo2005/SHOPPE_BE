@@ -1,6 +1,7 @@
 import { config } from 'dotenv'
 import { Collection, Db, MongoClient } from 'mongodb'
 import { Category } from '~/models/schemas/category.schema'
+import Media from '~/models/schemas/media.schema'
 import { RefreshToken } from '~/models/schemas/refreshToken.schema'
 import { User } from '~/models/schemas/user.schema'
 
@@ -31,6 +32,10 @@ class DatabaseService {
 
   get categories(): Collection<Category> {
     return this.db.collection(process.env.DB_CATEGORY as string)
+  }
+
+  get medias(): Collection<Media> {
+    return this.db.collection(process.env.DB_MEDIA as string)
   }
 }
 

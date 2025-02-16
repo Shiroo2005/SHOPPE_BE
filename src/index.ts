@@ -6,11 +6,13 @@ import { config } from 'dotenv'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import categoryRouter from './routes/category.routes'
+import mediaRouter from './routes/media.routes'
+import { initFolder } from './utils/file'
+import { UPLOAD_IMAGE_FOLDER } from './constants/dir'
 
 config()
 const app = express()
 const port = 8081
-
 app.use(
   cors({
     origin: process.env.HOST_FE || 'http://localhost:3000', // Thêm fallback nếu HOST_FE không hoạt động
@@ -20,6 +22,8 @@ app.use(
   })
 )
 
+initFolder()
+app.use('/static/images', express.static(UPLOAD_IMAGE_FOLDER))
 app.use(cookieParser())
 app.use(express.json())
 
@@ -27,6 +31,7 @@ databaseService.connect()
 
 app.use('/auth', authRouter)
 app.use('/category', categoryRouter)
+app.use('/media', mediaRouter)
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
