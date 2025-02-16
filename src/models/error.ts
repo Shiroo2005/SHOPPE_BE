@@ -1,3 +1,4 @@
+import { ValidationError } from 'express-validator'
 import { HTTP_STATUS } from '~/constants/http_status'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 
@@ -18,8 +19,14 @@ export class ErrorWithStatus {
 }
 
 export class EntityError extends ErrorWithStatus {
-  errors: ErrorsType
-  constructor({ message = VALIDATE_MESSAGES.VALIDATE_ERROR, errors }: { message?: string; errors: ErrorsType }) {
+  errors: (void | ValidationError)[]
+  constructor({
+    message = VALIDATE_MESSAGES.VALIDATE_ERROR,
+    errors
+  }: {
+    message?: string
+    errors: (void | ValidationError)[]
+  }) {
     super({ message, status: HTTP_STATUS.UNPROCESSABLE_ENTITY })
     this.errors = errors
   }

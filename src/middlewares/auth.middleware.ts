@@ -29,7 +29,7 @@ export const registerValidator = validate(
           }
         },
         matches: {
-          options: /[a-zA-z]/
+          options: /^(?=.*[a-zA-Z])[a-zA-Z0-9]{4,20}$/
         },
         errorMessage: VALIDATE_MESSAGES.USERNAME_MIN_LENGTH_AND_LETTER,
         custom: {

@@ -11,18 +11,21 @@ export const validate = (validation: RunnableValidationChains<ValidationChain>) 
     await validation.run(req)
     const result = validationResult(req)
 
-    const errorObjects = result.mapped()
+    const errorObjects = result.array()
 
-    const entityError = new EntityError({ errors: {} })
+    console.log(errorObjects)
 
-    for (const key in errorObjects) {
-      const { msg } = errorObjects[key]
-
+    const errors = errorObjects.map((error) => {
+      const { msg } = error
       if (msg instanceof ErrorWithStatus && msg.status !== HTTP_STATUS.UNPROCESSABLE_ENTITY) {
         return next(msg)
       }
-      entityError.errors[key] = errorObjects[key]
-    }
+
+      return error
+    })
+
+    const entityError = new EntityError({ errors: errors })
+
     if (!result.isEmpty()) {
       next(entityError)
     }

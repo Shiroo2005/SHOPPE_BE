@@ -12,6 +12,7 @@ import { RegisterReqBody } from '~/models/req/auth/RegisterReqBody'
 import { User } from '~/models/schemas/user.schema'
 import { TokenPayload } from '~/models/tokenPayload'
 import userService from '~/services/user.service'
+import { accessTokenCookieOption, refreshTokenCookieOption } from '~/utils/cookie'
 import { decodeToken, signToken } from '~/utils/jwt'
 config()
 export const registerController = async (
@@ -38,6 +39,9 @@ export const loginController = async (
     userId: user._id as ObjectId,
     isEmailVerified: user.isEmailVerified
   })
+
+  res.cookie('accessToken', result.accessToken, accessTokenCookieOption) // 15m expire
+  res.cookie('refreshToken', result.refreshToken, refreshTokenCookieOption) // 7d expire
   res.json({
     message: RESPONSE_MESSAGES.LOGIN_SUCCESS,
     result
@@ -66,6 +70,8 @@ export const newTokenController = async (
   const decodedRefreshToken = req.decodedRefreshToken as TokenPayload
   const { userId, exp, isEmailVerified } = decodedRefreshToken as TokenPayload
   const result = await userService.newToken({ userId, exp, isEmailVerified, refreshToken })
+  res.cookie('accessToken', result.accessToken, accessTokenCookieOption) // 15m expire
+  res.cookie('refreshToken', result.refreshToken, refreshTokenCookieOption) // 7d expire
   res.json({
     message: RESPONSE_MESSAGES.NEW_TOKEN_SUCCESS,
     result
@@ -132,7 +138,7 @@ export const loginGoogleController = async (
 
   const result = await userService.loginByGoogle({ email: data.email, fullName: data.name, avatar: data.picture })
 
-  res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: true, maxAge: 60 * 15 * 1000 }) // 15m expire
-  res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, maxAge: 7 * 60 * 60 * 1000 }) // 7d expire
+  res.cookie('accessToken', result.accessToken, accessTokenCookieOption) // 15m expire
+  res.cookie('refreshToken', result.refreshToken, refreshTokenCookieOption) // 7d expire
   res.redirect(`${process.env.FE_URL}/`)
 }
