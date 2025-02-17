@@ -64,6 +64,20 @@ class CategoryService {
 
     return buildTree({ parentId: null })
   }
+
+  deleteById = async (_id: ObjectId) => {
+    const result = await databaseService.categories.deleteMany({
+      $or: [
+        {
+          _id
+        },
+        {
+          parentId: _id
+        }
+      ]
+    })
+    return result
+  }
 }
 
 const categoryService = new CategoryService()

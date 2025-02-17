@@ -11,6 +11,7 @@ export const defaultErrorHandler = (err: any, req: Request, res: Response, next:
   // Object.getOwnPropertyNames(err).forEach((key) => {
   //   Object.defineProperty(err, key, { enumerable: true })
   // })
+
   res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
     message: err.message,
     errorInfo: err

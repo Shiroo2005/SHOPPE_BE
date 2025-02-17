@@ -1,12 +1,14 @@
 import express from 'express'
 import {
   createCategoryController,
+  deleteCategoryController,
   getTreeCategoryController,
   updateCategoryController
 } from '~/controllers/category.controller'
 import {
   createCategoryValidator,
   idCategoryUpdateValidator,
+  idCategoryValidator,
   updateCategoryValidator
 } from '~/middlewares/category.middleware'
 import { wrapRequestHandler } from '~/utils/handler'
@@ -42,6 +44,18 @@ categoryRouter.put(
   wrapRequestHandler(updateCategoryController)
 )
 
+/*
+  Description: Update category
+  Method: GET
+  Path: /tree
+*/
 categoryRouter.get('/tree', wrapRequestHandler(getTreeCategoryController))
 
+/*
+  Description: Delete category
+  Method: DELETE
+  Path: /:id 
+  If category has child, then will delete all child's its
+*/
+categoryRouter.delete('/:id', idCategoryValidator, wrapRequestHandler(deleteCategoryController))
 export default categoryRouter
