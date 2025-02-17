@@ -16,7 +16,12 @@ class CategoryService {
 
   async createCategory({ parentId, image, name }: CreateReqBody) {
     const _parentId = parentId == null ? null : new ObjectId(parentId)
-    const result = await databaseService.categories.insertOne({ parentId: _parentId, image, name })
+    const result = await databaseService.categories.insertOne({
+      parentId: _parentId,
+      image,
+      name,
+      updatedAt: new Date()
+    })
     return result
   }
 
