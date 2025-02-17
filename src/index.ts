@@ -9,6 +9,7 @@ import categoryRouter from './routes/category.routes'
 import mediaRouter from './routes/media.routes'
 import { initFolder } from './utils/file'
 import { UPLOAD_IMAGE_FOLDER } from './constants/dir'
+import productRouter from './routes/product.routes'
 
 config()
 const app = express()
@@ -32,6 +33,7 @@ databaseService.connect()
 app.use('/auth', authRouter)
 app.use('/categories', categoryRouter)
 app.use('/media', mediaRouter)
+app.use('/products', productRouter)
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
