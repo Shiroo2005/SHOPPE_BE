@@ -11,6 +11,7 @@ import databaseService from './database.service'
 class MediaService {
   uploadImage = async (req: Request, userId: string) => {
     const files = await handleUploadImage(req)
+
     const medias = await Promise.all(
       files.map(async (file) => {
         const newName = getNameFromFullnameMedia(file.newFilename)

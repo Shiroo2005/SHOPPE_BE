@@ -22,10 +22,11 @@ export const handleUploadImage = async (req: Request) => {
     maxFileSize: 1000 * 1024, // 1 MB
     maxTotalFileSize: 1000 * 1024 * 4, // 4 MB
     filter: function ({ name, originalFilename, mimetype }) {
-      const valid = name === 'image' && mimetype?.includes('image/')
+      const valid = name === 'images' && mimetype?.includes('image/')
       if (!valid) {
         form.emit('error' as any, new Error('File type is not valid') as any)
       }
+
       return valid as boolean
     }
   })
@@ -34,11 +35,11 @@ export const handleUploadImage = async (req: Request) => {
     form.parse(req, (err, fields, files) => {
       if (err) {
         return reject(err)
-      } else if (!files.image) {
+      } else if (!files.images) {
         return reject(new Error('Image must be not empty'))
       }
 
-      resolve(files.image as File[])
+      resolve(files.images as File[])
     })
   })
 }
