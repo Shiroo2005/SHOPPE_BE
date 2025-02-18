@@ -46,5 +46,33 @@ export const VALIDATE_MESSAGES = {
   CATEGORY_NAME_INVALID: 'Contain only letter and number',
 
   INVALID_URL: 'Invalid URL format',
-  IMAGE_URL_INVALID_FORMAT: 'Image URL must end with .jpg, .jpeg, .png, .gif, or .webp'
+  IMAGE_URL_INVALID_FORMAT: 'Image URL must end with .jpg, .jpeg, .png, .gif, or .webp',
+
+  //Variant
+  VARIANT_TITLE_REQUIRED: 'Title is required',
+  VARIANT_TITLE_REGEX: 'Only letter number and must contain at least 1 letter',
+  VARIANT_CHOICES_REQUIRED: 'Choices is required',
+  VARIANT_CHOICE_REGEX: 'Choice contain only letter and number',
+
+  //Product
+  PRODUCT_TITLE_REX: 'Title product contain only letter, number and must contain at least 1 letter',
+  PRODUCT_CATEGORY_NOT_EMPTY: 'Category can not empty',
+  PRODUCT_VARIANT_NOT_EMPTY: 'Variant can not empty',
+  PRODUCT_CHOICES_ARRAY: 'Choices must be an array',
+  PRODUCT_CHOICES_NOT_EMPTY: 'Choice can not empty',
+  PRODUCT_CHOICES_ITEM_NOT_EMPTY: 'Choice item can not empty',
+  PRODUCT_VARIANT_IS_ARRAY: 'Variant must an array',
+
+  //Common
+  MIN_LENGTH_4: 'Min length can not lower than 4',
+  CONTAIN_ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_AT_LEAST_1_LETTER:
+    'Contain only letter, number and must contain at least 1 letter',
+  MAX_LENGTH_100: 'Max length is 100',
+  MIN_LENGTH: 'Min length can not lower than',
+  MAX_LENGTH: 'Max length is',
+  PRICE_POSITIVE: 'Price must be a positive number',
+  STOCK_NON_NEGATIVE: 'Stock can not be a negative number',
+  SOLD_NON_NEGATIVE: 'Sold can not be a negative number',
+  IMAGE_STRING: 'Image must be a string',
+  IMAGE_NOT_EMPTY: 'Image is required'
 }
