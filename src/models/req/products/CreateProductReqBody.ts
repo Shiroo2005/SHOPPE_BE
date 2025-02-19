@@ -3,14 +3,15 @@ import Media from '~/models/schemas/media.schema'
 
 export interface CreateProductReqBody {
   title: string
-  medias: string[]
-  categories: string[]
+  mainImage: string
+  medias: Media[]
+  categories: ObjectId[]
   description: string
   variants: string[]
   productItems: CreateProductItemReqBody[]
 }
 
-interface CreateProductItemReqBody {
+export interface CreateProductItemReqBody {
   price: number
   stock: Int32
   sold: Int32

@@ -1,7 +1,8 @@
 import express from 'express'
 import variantRouter from './variant.routes'
 import { createProductController } from '~/controllers/product.controller'
-import { createProductValidator } from '~/middlewares/product.middleware'
+import { createProductItemValidator, createProductValidator } from '~/middlewares/product.middleware'
+import { accessTokenValidator } from '~/middlewares/auth.middleware'
 
 const productRouter = express.Router()
 
@@ -29,6 +30,12 @@ productRouter.use('/variants', variantRouter)
     choices: string[]
   }
 */
-productRouter.use('/', createProductValidator, createProductController)
+productRouter.use(
+  '/',
+  accessTokenValidator,
+  createProductValidator,
+  createProductItemValidator,
+  createProductController
+)
 
 export default productRouter

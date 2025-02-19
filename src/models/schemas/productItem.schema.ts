@@ -6,7 +6,7 @@ interface ProductItemConstructor {
   stock: Int32
   sold: Int32
   image: string
-  choiceIds?: ObjectId
+  choices?: string[]
 }
 
 export class ProductItem {
@@ -15,13 +15,13 @@ export class ProductItem {
   stock: Int32
   sold: Int32
   image: string
-  choiceIds?: ObjectId
+  choices?: string[]
   constructor(productItem: ProductItemConstructor) {
     this._id = productItem._id
     this.price = productItem.price
     this.stock = productItem.stock
     this.sold = productItem.sold
     this.image = productItem.image
-    this.choiceIds = productItem.choiceIds
+    this.choices = productItem.choices
   }
 }

@@ -2,18 +2,18 @@ import { ObjectId } from 'mongodb'
 
 interface VariantConstructor {
   _id?: ObjectId
-  name: string
-  choicesId: ObjectId[]
+  title: string
+  choices: string[]
 }
 
 export class Variant {
   _id?: ObjectId
-  name: string
-  choicesId: ObjectId[]
+  title: string
+  choices: string[]
 
-  constructor(variation: VariantConstructor) {
-    this._id = variation._id
-    this.name = variation.name
-    this.choicesId = variation.choicesId
+  constructor(variant: VariantConstructor) {
+    this._id = variant._id
+    this.title = variant.title
+    this.choices = variant.choices
   }
 }

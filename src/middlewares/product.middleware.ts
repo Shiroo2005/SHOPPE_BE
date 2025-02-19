@@ -42,6 +42,7 @@ export const createProductValidator = validate(
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
             })
+            return true
           }
         }
       },
@@ -79,6 +80,7 @@ export const createProductValidator = validate(
                 })
               }
             })
+            return true
           }
         }
       }
@@ -90,25 +92,34 @@ export const createProductValidator = validate(
 export const createProductItemValidator = validate(
   checkSchema(
     {
-      price: {
+      productItems: {
+        isArray: {
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_ITEM_IS_ARRAY
+        },
+        notEmpty: {
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_ITEM_NOT_EMPTY
+        }
+      },
+      'productItems.*.price': {
         isFloat: {
           options: { gt: 0 },
           errorMessage: VALIDATE_MESSAGES.PRICE_POSITIVE
         }
       },
-      stock: {
+      'productItems.*.stock': {
         isInt: {
           options: { min: 0 },
           errorMessage: VALIDATE_MESSAGES.STOCK_NON_NEGATIVE
         }
       },
-      sold: {
+      'productItems.*.sold': {
         isInt: {
           options: { min: 0 },
           errorMessage: VALIDATE_MESSAGES.SOLD_NON_NEGATIVE
         }
       },
-      image: {
+      'productItems.*.image': {
+        optional: true,
         isString: {
           errorMessage: VALIDATE_MESSAGES.IMAGE_STRING
         },
@@ -116,27 +127,30 @@ export const createProductItemValidator = validate(
           errorMessage: VALIDATE_MESSAGES.IMAGE_NOT_EMPTY
         }
       },
-      choices: {
+      'productItems.*.choices': {
         isArray: {
           errorMessage: VALIDATE_MESSAGES.PRODUCT_CHOICES_ARRAY
         },
+        notEmpty: {
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_CHOICES_NOT_EMPTY
+        },
         custom: {
           options: (value: string[]) => {
-            if (value.length === 0)
+            if (!Array.isArray(value)) {
               throw new ErrorWithStatus({
-                message: VALIDATE_MESSAGES.PRODUCT_CHOICES_NOT_EMPTY,
+                message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ARRAY,
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
+            }
 
-            value.forEach((choice) => {
+            for (const choice of value) {
               if (typeof choice !== 'string' || choice.trim() === '') {
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_NOT_EMPTY,
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
               }
-            })
-
+            }
             return true
           }
         }
