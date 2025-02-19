@@ -7,34 +7,45 @@ import { validate } from '~/utils/custom_validation'
 
 export const validateVariantReqBody = validate(
   checkSchema({
-    title: {
-      trim: true,
-      matches: {
-        options: REGEX.ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_ONE_LETTER,
-        errorMessage: VALIDATE_MESSAGES.VARIANT_TITLE_REGEX
+    variants: {
+      isArray: {
+        errorMessage: VALIDATE_MESSAGES.VARIANT_ARRAY_REQUIRED
       },
-      notEmpty: {
-        errorMessage: VALIDATE_MESSAGES.VARIANT_TITLE_REQUIRED
-      }
-    },
-    choices: {
       custom: {
-        options: (value) => {
-          const choices = value as string[]
-          if (choices.length === 0)
-            throw (
-              (new ErrorWithStatus({
+        options: (variants) => {
+          if (!Array.isArray(variants) || variants.length === 0) {
+            throw new ErrorWithStatus({
+              message: VALIDATE_MESSAGES.VARIANT_ARRAY_REQUIRED,
+              status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+            })
+          }
+
+          variants.forEach((variant) => {
+            if (!variant.title || !variant.title.match(REGEX.ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_ONE_LETTER)) {
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.VARIANT_TITLE_REGEX,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            }
+
+            if (!Array.isArray(variant.choices) || variant.choices.length === 0) {
+              throw new ErrorWithStatus({
                 message: VALIDATE_MESSAGES.VARIANT_CHOICES_REQUIRED,
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
-              }),
-              choices.forEach((choice) => {
-                if (!choice.match(REGEX.ONLY_LETTER_AND_NUMBER))
-                  throw new ErrorWithStatus({
-                    message: VALIDATE_MESSAGES.VARIANT_CHOICE_REGEX,
-                    status: HTTP_STATUS.UNPROCESSABLE_ENTITY
-                  })
-              }))
-            )
+              })
+            }
+
+            variant.choices.forEach((choice: string) => {
+              if (!choice.match(REGEX.ONLY_LETTER_AND_NUMBER)) {
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.VARIANT_CHOICE_REGEX,
+                  status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+                })
+              }
+            })
+          })
+
+          return true
         }
       }
     }

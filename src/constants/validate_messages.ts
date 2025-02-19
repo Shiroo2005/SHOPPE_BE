@@ -49,6 +49,7 @@ export const VALIDATE_MESSAGES = {
   IMAGE_URL_INVALID_FORMAT: 'Image URL must end with .jpg, .jpeg, .png, .gif, or .webp',
 
   //Variant
+  VARIANT_ARRAY_REQUIRED: 'Variant array is required',
   VARIANT_TITLE_REQUIRED: 'Title is required',
   VARIANT_TITLE_REGEX: 'Only letter number and must contain at least 1 letter',
   VARIANT_CHOICES_REQUIRED: 'Choices is required',

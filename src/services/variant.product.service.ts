@@ -1,12 +1,15 @@
+import { ObjectId } from 'mongodb'
 import databaseService from './database.service'
+import { CreateVariantReqBody } from '~/models/req/products/CreateVariantReqBody'
+import { toVariant } from '~/utils/convert'
 
 class VariantService {
-  createVariant = async ({ title, choices }: { title: string; choices: string[] }) => {
-    const variantInDb = await databaseService.variants.insertOne({ title, choices })
+  createVariants = async (variantsReq: CreateVariantReqBody, userId: string) => {
+    const _userId = new ObjectId(userId)
+    const variants = variantsReq.variants.map((value) => toVariant(value.title, value.choices, _userId))
+    const variantInDb = await databaseService.variants.insertMany(variants)
 
-    return {
-      variantInDb
-    }
+    return Object.values(variantInDb.insertedIds)
   }
 }
 
