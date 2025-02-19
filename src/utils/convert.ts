@@ -4,12 +4,7 @@ import { CreateVariantReqBody } from '~/models/req/products/CreateVariantReqBody
 import { Product } from '~/models/schemas/product.schema'
 import { Variant } from '~/models/schemas/variant.schema'
 
-export const toProduct = (
-  payload: CreateProductReqBody,
-  userId: string,
-  variantsId: ObjectId[],
-  productItemsId: ObjectId[]
-) => {
+export const toProduct = (payload: CreateProductReqBody, userId: string, productItemsId: ObjectId[]) => {
   return new Product({
     title: payload.title,
     description: payload.description,
@@ -18,7 +13,7 @@ export const toProduct = (
     medias: payload.medias,
     productItemsId: productItemsId,
     shopId: new ObjectId(userId),
-    variantsId
+    variantsId: payload.variants.map((variant) => new ObjectId(variant))
   })
 }
 

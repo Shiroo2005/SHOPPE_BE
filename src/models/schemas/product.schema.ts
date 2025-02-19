@@ -12,6 +12,10 @@ interface ProductConstructor {
   variantsId: ObjectId[]
   productItemsId: ObjectId[]
   isDeleted?: boolean
+  createdAt?: Date
+  createdBy: ObjectId
+  updatedAt?: Date
+  updatedBy: ObjectId
 }
 
 export class Product {
@@ -25,7 +29,12 @@ export class Product {
   variantsId: ObjectId[]
   productItemsId: ObjectId[]
   isDeleted: boolean
+  createdAt?: Date
+  createdBy: ObjectId
+  updatedAt?: Date
+  updatedBy: ObjectId
   constructor(product: ProductConstructor) {
+    const now = new Date()
     this._id = product._id
     this.shopId = product.shopId
     this.title = product.title
@@ -36,5 +45,9 @@ export class Product {
     this.variantsId = product.variantsId
     this.productItemsId = product.productItemsId
     this.isDeleted = product.isDeleted || false
+    this.createdAt = product.createdAt || now
+    this.createdBy = product.createdBy
+    this.updatedAt = product.updatedAt || now
+    this.updatedBy = product.updatedBy
   }
 }

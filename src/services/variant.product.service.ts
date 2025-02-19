@@ -11,6 +11,11 @@ class VariantService {
 
     return Object.values(variantInDb.insertedIds)
   }
+
+  findById = async (_id: ObjectId) => {
+    const result = await databaseService.variants.findOne({ _id })
+    return result
+  }
 }
 
 const variantService = new VariantService()

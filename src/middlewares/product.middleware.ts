@@ -1,8 +1,11 @@
 import { checkSchema } from 'express-validator'
+import { ObjectId } from 'mongodb'
 import { HTTP_STATUS } from '~/constants/http_status'
 import { REGEX } from '~/constants/regex'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
+import categoryService from '~/services/category.service'
+import variantService from '~/services/variant.product.service'
 import { validate } from '~/utils/custom_validation'
 
 export const createProductValidator = validate(
@@ -23,25 +26,31 @@ export const createProductValidator = validate(
       },
       categories: {
         custom: {
-          options: (value: string[]) => {
-            if (value.length === 0)
+          options: async (value: string[]) => {
+            if (value.length === 0) {
               throw new ErrorWithStatus({
                 message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_NOT_EMPTY,
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
+            }
 
-            value.forEach((category) => {
-              if (!category.match(REGEX.ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_ONE_LETTER))
+            for (const id of value) {
+              if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
-                  message: `Category ${VALIDATE_MESSAGES.CONTAIN_ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_AT_LEAST_1_LETTER}`,
+                  message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_IS_INVALID,
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
-              else if (category.length > 100)
+              }
+
+              const categoryExists = await categoryService.findById(new ObjectId(id))
+              if (!categoryExists) {
                 throw new ErrorWithStatus({
-                  message: `Category ${VALIDATE_MESSAGES.MAX_LENGTH_100}`,
-                  status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+                  message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_NOT_FOUND,
+                  status: HTTP_STATUS.BAD_REQUEST
                 })
-            })
+              }
+            }
+
             return true
           }
         }
@@ -55,9 +64,8 @@ export const createProductValidator = validate(
           },
           errorMessage: `Description ${VALIDATE_MESSAGES.MIN_LENGTH} 20 and ${VALIDATE_MESSAGES.MAX_LENGTH} 200`
         },
-        matches: {
-          options: REGEX.ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_ONE_LETTER,
-          errorMessage: VALIDATE_MESSAGES.CONTAIN_ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_AT_LEAST_1_LETTER
+        isString: {
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_DESCRIPTION_INVALID
         }
       },
       variants: {
@@ -65,21 +73,29 @@ export const createProductValidator = validate(
           errorMessage: VALIDATE_MESSAGES.PRODUCT_VARIANT_IS_ARRAY
         },
         custom: {
-          options: (value: string[]) => {
+          options: async (value: string[]) => {
             if (value.length === 0)
               throw new ErrorWithStatus({
                 message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_EMPTY,
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
 
-            value.forEach((variant) => {
-              if (!variant.match(REGEX.ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_ONE_LETTER)) {
+            for (const id of value) {
+              if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
-                  message: `Variant ${VALIDATE_MESSAGES.CONTAIN_ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_AT_LEAST_1_LETTER}`,
+                  message: VALIDATE_MESSAGES.PRODUCT_VARIANT_INVALID,
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
               }
-            })
+
+              const variantExitsts = await variantService.findById(new ObjectId(id))
+              if (!variantExitsts) {
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_FOUND,
+                  status: HTTP_STATUS.BAD_REQUEST
+                })
+              }
+            }
             return true
           }
         }

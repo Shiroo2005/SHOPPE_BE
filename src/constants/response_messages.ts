@@ -30,5 +30,8 @@ export const RESPONSE_MESSAGES = {
   CATEGORY_DELETE_SUCCESS: 'Delete category successful',
 
   //Variant
-  CREATE_VARIANT_SUCCESS: 'Create new variant successful'
+  CREATE_VARIANT_SUCCESS: 'Create new variant successful',
+
+  //Product
+  CREATE_PRODUCT_SUCCESS: 'Create new product successful'
 }

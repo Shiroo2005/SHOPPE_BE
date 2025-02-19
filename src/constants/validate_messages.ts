@@ -65,6 +65,11 @@ export const VALIDATE_MESSAGES = {
   PRODUCT_VARIANT_IS_ARRAY: 'Variant must an array',
   PRODUCT_ITEM_IS_ARRAY: 'Product item must an array',
   PRODUCT_ITEM_NOT_EMPTY: 'Product item can not empty',
+  PRODUCT_CATEGORY_IS_INVALID: 'Product category must be an Object Id',
+  PRODUCT_CATEGORY_NOT_FOUND: 'Product category not found',
+  PRODUCT_VARIANT_INVALID: 'Product variant must be an Object Id',
+  PRODUCT_VARIANT_NOT_FOUND: 'Product variant not found',
+  PRODUCT_DESCRIPTION_INVALID: 'Product description invalid',
 
   //Common
   MIN_LENGTH_4: 'Min length can not lower than 4',
