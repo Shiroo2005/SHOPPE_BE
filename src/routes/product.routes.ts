@@ -38,4 +38,12 @@ productRouter.post(
   createProductController
 )
 
+productRouter.put(
+  '/:id',
+  accessTokenValidator,
+  createProductValidator,
+  createProductItemValidator,
+  createProductController
+)
+
 export default productRouter

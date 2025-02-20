@@ -7,6 +7,7 @@ import { ErrorWithStatus } from '~/models/error'
 import categoryService from '~/services/category.service'
 import variantService from '~/services/variant.product.service'
 import { validate } from '~/utils/custom_validation'
+import { trimArray } from '~/utils/helper'
 
 export const createProductValidator = validate(
   checkSchema(
@@ -34,7 +35,9 @@ export const createProductValidator = validate(
               })
             }
 
-            for (const id of value) {
+            const arr = trimArray(value)
+
+            for (const id of arr) {
               if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_IS_INVALID,
@@ -79,8 +82,8 @@ export const createProductValidator = validate(
                 message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_EMPTY,
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
-
-            for (const id of value) {
+            const arr = trimArray(value)
+            for (const id of arr) {
               if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_VARIANT_INVALID,
@@ -88,8 +91,8 @@ export const createProductValidator = validate(
                 })
               }
 
-              const variantExitsts = await variantService.findById(new ObjectId(id))
-              if (!variantExitsts) {
+              const variantExists = await variantService.findById(new ObjectId(id))
+              if (!variantExists) {
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_FOUND,
                   status: HTTP_STATUS.BAD_REQUEST
@@ -158,8 +161,8 @@ export const createProductItemValidator = validate(
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
             }
-
-            for (const choice of value) {
+            const arr = trimArray(value)
+            for (const choice of arr) {
               if (!ObjectId.isValid(choice))
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_INVALID,
