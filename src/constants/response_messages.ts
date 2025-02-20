@@ -31,6 +31,7 @@ export const RESPONSE_MESSAGES = {
 
   //Variant
   CREATE_VARIANT_SUCCESS: 'Create new variant successful',
+  UPDATE_VARIANT_SUCCESS: 'Update variant successful',
 
   //Product
   CREATE_PRODUCT_SUCCESS: 'Create new product successful'

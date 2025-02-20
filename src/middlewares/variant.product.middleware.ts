@@ -1,8 +1,10 @@
 import { checkSchema } from 'express-validator'
+import { ObjectId } from 'mongodb'
 import { HTTP_STATUS } from '~/constants/http_status'
 import { REGEX } from '~/constants/regex'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
+import databaseService from '~/services/database.service'
 import { validate } from '~/utils/custom_validation'
 
 export const validateVariantReqBody = validate(
@@ -50,4 +52,30 @@ export const validateVariantReqBody = validate(
       }
     }
   })
+)
+
+export const idVariantUpdateReqBody = validate(
+  checkSchema(
+    {
+      id: {
+        custom: {
+          options: async (value: string) => {
+            if (!value || !ObjectId.isValid(value))
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.VARIANT_ID_INVALID,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+
+            const result = await databaseService.variants.findOne({ _id: new ObjectId(value) })
+            if (!result)
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.VARIANT_ID_NOT_FOUND,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+          }
+        }
+      }
+    },
+    ['params']
+  )
 )

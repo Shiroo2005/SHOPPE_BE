@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb'
 import databaseService from './database.service'
 import { CreateVariantReqBody } from '~/models/req/products/CreateVariantReqBody'
 import { toChoices, toVariant } from '~/utils/convert'
+import { UpdateVariantReqBody } from '~/models/req/products/UpdateVariantReqBody'
 
 class VariantService {
   createVariants = async (variantsReq: CreateVariantReqBody, userId: string) => {
@@ -14,12 +15,25 @@ class VariantService {
       })
     )
     const variantIDDb = await databaseService.variants.insertMany(variants)
-    const variantInDb = await databaseService.variants.find({
-      _id: {
-        $in: Object.values(variantIDDb.insertedIds)
+
+    return Object.values(variantIDDb.insertedIds)
+  }
+
+  updateVariantById = async (variantReq: UpdateVariantReqBody, userId: string, id: string) => {
+    const choices = await this.createChoices(variantReq.choices)
+    const result = await databaseService.variants.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          updatedBy: new ObjectId(userId),
+          updatedAt: new Date(),
+          choices,
+          title: variantReq.title
+        }
       }
-    })
-    return variantInDb.toArray()
+    )
+
+    return result
   }
 
   createChoices = async (choices: string[]) => {

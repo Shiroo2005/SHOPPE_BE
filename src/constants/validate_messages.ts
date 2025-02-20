@@ -72,6 +72,10 @@ export const VALIDATE_MESSAGES = {
   PRODUCT_VARIANT_NOT_FOUND: 'Product variant not found',
   PRODUCT_DESCRIPTION_INVALID: 'Product description invalid',
 
+  //Variant
+  VARIANT_ID_INVALID: 'Variant id invalid',
+  VARIANT_ID_NOT_FOUND: 'Variant id not found',
+
   //Common
   MIN_LENGTH_4: 'Min length can not lower than 4',
   CONTAIN_ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_AT_LEAST_1_LETTER:
