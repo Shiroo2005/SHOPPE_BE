@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 interface VariantConstructor {
   _id?: ObjectId
   title: string
-  choices: string[]
+  choices: ObjectId[]
   createdAt?: Date
   createdBy: ObjectId
   updatedAt?: Date
@@ -13,7 +13,7 @@ interface VariantConstructor {
 export class Variant {
   _id?: ObjectId
   title: string
-  choices: string[]
+  choices: ObjectId[]
   createdAt?: Date
   createdBy: ObjectId
   updatedAt?: Date

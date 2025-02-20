@@ -160,12 +160,11 @@ export const createProductItemValidator = validate(
             }
 
             for (const choice of value) {
-              if (typeof choice !== 'string' || choice.trim() === '') {
+              if (!ObjectId.isValid(choice))
                 throw new ErrorWithStatus({
-                  message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_NOT_EMPTY,
+                  message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_INVALID,
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
-              }
             }
             return true
           }

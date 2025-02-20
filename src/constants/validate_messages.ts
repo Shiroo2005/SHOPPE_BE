@@ -62,6 +62,7 @@ export const VALIDATE_MESSAGES = {
   PRODUCT_CHOICES_ARRAY: 'Choices must be an array',
   PRODUCT_CHOICES_NOT_EMPTY: 'Choice can not empty',
   PRODUCT_CHOICES_ITEM_NOT_EMPTY: 'Choice item can not empty',
+  PRODUCT_CHOICES_ITEM_INVALID: 'Choice item invalid',
   PRODUCT_VARIANT_IS_ARRAY: 'Variant must an array',
   PRODUCT_ITEM_IS_ARRAY: 'Product item must an array',
   PRODUCT_ITEM_NOT_EMPTY: 'Product item can not empty',

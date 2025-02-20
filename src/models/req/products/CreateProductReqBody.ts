@@ -16,5 +16,5 @@ export interface CreateProductItemReqBody {
   stock: Int32
   sold: Int32
   image: string
-  choices: string[]
+  choices: ObjectId[]
 }

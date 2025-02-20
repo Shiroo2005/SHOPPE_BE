@@ -6,7 +6,7 @@ interface ProductItemConstructor {
   stock: Int32
   sold: Int32
   image: string
-  choices?: string[]
+  choices?: ObjectId[]
 }
 
 export class ProductItem {
@@ -15,7 +15,7 @@ export class ProductItem {
   stock: Int32
   sold: Int32
   image: string
-  choices?: string[]
+  choices?: ObjectId[]
   constructor(productItem: ProductItemConstructor) {
     this._id = productItem._id
     this.price = productItem.price

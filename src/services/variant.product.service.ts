@@ -1,15 +1,30 @@
 import { ObjectId } from 'mongodb'
 import databaseService from './database.service'
 import { CreateVariantReqBody } from '~/models/req/products/CreateVariantReqBody'
-import { toVariant } from '~/utils/convert'
+import { toChoices, toVariant } from '~/utils/convert'
 
 class VariantService {
   createVariants = async (variantsReq: CreateVariantReqBody, userId: string) => {
     const _userId = new ObjectId(userId)
-    const variants = variantsReq.variants.map((value) => toVariant(value.title, value.choices, _userId))
-    const variantInDb = await databaseService.variants.insertMany(variants)
 
-    return Object.values(variantInDb.insertedIds)
+    const variants = await Promise.all(
+      variantsReq.variants.map(async (value) => {
+        const choices = await this.createChoices(value.choices)
+        return toVariant(value.title, choices, _userId)
+      })
+    )
+    const variantIDDb = await databaseService.variants.insertMany(variants)
+    const variantInDb = await databaseService.variants.find({
+      _id: {
+        $in: Object.values(variantIDDb.insertedIds)
+      }
+    })
+    return variantInDb.toArray()
+  }
+
+  createChoices = async (choices: string[]) => {
+    const result = await databaseService.choices.insertMany(choices.map((choice) => toChoices(choice)))
+    return Object.values(result.insertedIds)
   }
 
   findById = async (_id: ObjectId) => {
