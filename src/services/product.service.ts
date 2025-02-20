@@ -1,20 +1,71 @@
-import { CreateProductItemReqBody, CreateProductReqBody } from '~/models/req/products/CreateProductReqBody'
+import { CreateProductReqBody, ProductItemReqBody } from '~/models/req/product/CreateProductReqBody'
 import databaseService from './database.service'
 import { toProduct } from '~/utils/convert'
+import { Variant } from '~/models/schemas/variant.schema'
+import { ObjectId } from 'mongodb'
+import { Choice } from '~/models/schemas/choices.schema'
 
 class ProductService {
   createProduct = async (payload: CreateProductReqBody, userId: string) => {
-    const productItems = await Promise.all(
-      payload.productItems.map(async (productItem) => await this.createProductItem(productItem))
+    const variantInDb = await databaseService.variants.insertMany(
+      payload.variants.map(
+        (variant) =>
+          new Variant({
+            name: variant
+          })
+      )
     )
 
-    const result = await databaseService.products.insertOne(toProduct(payload, userId, productItems))
+    const variantIds = Object.values(variantInDb.insertedIds)
+    const choices = this.convertToChoiceMatch(payload.productItems)
+    let choiceIds = await Promise.all(choices.map((choice, idx) => this.createChoices(choice, variantIds[idx])))
+
+    //revert choices
+    choiceIds = this.revertChoice(choiceIds)
+    const productItemIds = await Promise.all(
+      payload.productItems.map((productItem, idx) => this.createProductItem(productItem, choiceIds[idx]))
+    )
+    const result = await databaseService.products.insertOne(toProduct(payload, userId, productItemIds))
 
     const productInDb = await databaseService.products.findOne({ _id: result.insertedId })
     return productInDb
   }
 
-  private createProductItem = async ({ price, stock, sold, choices, image }: CreateProductItemReqBody) => {
+  private convertToChoiceMatch = (productItems: ProductItemReqBody[]) => {
+    return productItems.reduce((acc: string[][], item) => {
+      item.choices.forEach((choice: string, idx) => {
+        if (!acc[idx]) acc[idx] = []
+        acc[idx].push(choice)
+      })
+      return acc
+    }, [] as string[][])
+  }
+
+  private revertChoice = (choices: ObjectId[][]) => {
+    return choices.reduce((acc: ObjectId[][], choice) => {
+      choice.forEach((item, idx) => {
+        if (!acc[idx]) acc[idx] = []
+        acc[idx].push(item)
+      })
+      return acc
+    }, [] as ObjectId[][])
+  }
+
+  private createChoices = async (choices: string[], variantId: ObjectId) => {
+    const result = await databaseService.choices.insertMany(
+      choices.map(
+        (choice) =>
+          new Choice({
+            name: choice,
+            variant: variantId
+          })
+      )
+    )
+
+    return Object.values(result.insertedIds)
+  }
+
+  private createProductItem = async ({ price, stock, sold, image }: ProductItemReqBody, choices: ObjectId[]) => {
     const result = await databaseService.productItems.insertOne({
       price,
       stock,
@@ -44,10 +95,6 @@ class ProductService {
 
   //   return result.map((item) => item.variantInDb.insertedId)
   // }
-
-  getChoicesFromProductItem = (payload: CreateProductItemReqBody) => {
-    const choices = payload.choices
-  }
 }
 
 const productService = new ProductService()
