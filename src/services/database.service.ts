@@ -4,6 +4,7 @@ import { Category } from '~/models/schemas/category.schema'
 import Media from '~/models/schemas/media.schema'
 import { RefreshToken } from '~/models/schemas/refreshToken.schema'
 import { User } from '~/models/schemas/user.schema'
+import { Variant } from '~/models/schemas/variant.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@shoppe.68c4b.mongodb.net/?retryWrites=true&w=majority&appName=Shoppe`
@@ -36,6 +37,10 @@ class DatabaseService {
 
   get medias(): Collection<Media> {
     return this.db.collection(process.env.DB_MEDIA as string)
+  }
+
+  get variants(): Collection<Variant> {
+    return this.db.collection(process.env.DB_VARIANT as string)
   }
 }
 

@@ -46,5 +46,29 @@ export const VALIDATE_MESSAGES = {
   CATEGORY_NAME_INVALID: 'Contain only letter and number',
 
   INVALID_URL: 'Invalid URL format',
-  IMAGE_URL_INVALID_FORMAT: 'Image URL must end with .jpg, .jpeg, .png, .gif, or .webp'
+  IMAGE_URL_INVALID_FORMAT: 'Image URL must end with .jpg, .jpeg, .png, .gif, or .webp',
+
+  //Product
+  PRODUCT_TITLE_REGEX: 'Product title invalid',
+  PRODUCT_TITLE_LENGTH: 'Title length must at least 4 letter and lower than 100 ',
+  PRODUCT_CATEGORY_ARRAY: 'Product category must be an array',
+  PRODUCT_CATEGORY_NOT_EMPTY: 'Product category can not empty',
+  PRODUCT_CATEGORY_INVALID: 'Product category invalid',
+  PRODUCT_CATEGORY_NOT_FOUND: 'Product category not found',
+  PRODUCT_DESC_LENGTH: 'Description length must at least 20 letter and lower than 200',
+  PRODUCT_DESC_STRING: 'Product description must be a string',
+  PRODUCT_VARIANT_INVALID: 'Product variant invalid',
+  PRODUCT_VARIANT_NOT_FOUND: 'Product variant not found',
+
+  //Product Item
+  PRODUCT_ITEM_ARRAY: 'Product item must be an array',
+  PRODUCT_ITEM_NOT_EMPTY: 'Product item can not be empty',
+  PRICE_POSITIVE: 'Price must higher than 0',
+  STOCK_NON_NEGATIVE: 'Stock can not negative',
+  SOLD_NON_NEGATIVE: 'Sold can not negative',
+  IMAGE_STRING: 'Image must a string',
+  IMAGE_NOT_EMPTY: 'Image can not empty',
+  PRODUCT_CHOICES_ARRAY: 'Product choices must be an array',
+  PRODUCT_CHOICES_ITEM_INVALID: 'Product choices item invalid',
+  PRODUCT_CHOICES_NUMBER_MATCH: 'The number of choices must match the number of variants'
 }
