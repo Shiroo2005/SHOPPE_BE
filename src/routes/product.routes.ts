@@ -30,7 +30,7 @@ productRouter.use('/variants', variantRouter)
     choices: string[]
   }
 */
-productRouter.use(
+productRouter.post(
   '/',
   accessTokenValidator,
   createProductValidator,
