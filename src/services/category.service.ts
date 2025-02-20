@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import databaseService from './database.service'
-import { CreateReqBody } from '~/models/req/category/CreateReqBody'
+import { CreateReqBody } from '~/models/req/categories/CreateReqBody'
 import { CategoryTree } from '~/models/categoryTree'
 
 class CategoryService {

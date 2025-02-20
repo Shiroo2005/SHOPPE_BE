@@ -27,5 +27,12 @@ export const RESPONSE_MESSAGES = {
   CATEGORY_CREATE_SUCCESS: 'Create category successful',
   CATEGORY_UPDATE_SUCCESS: 'Update category successful',
   CATEGORY_GET_TREE_SUCCESS: 'Get tree category successful',
-  CATEGORY_DELETE_SUCCESS: 'Delete category successful'
+  CATEGORY_DELETE_SUCCESS: 'Delete category successful',
+
+  //Variant
+  CREATE_VARIANT_SUCCESS: 'Create new variant successful',
+  UPDATE_VARIANT_SUCCESS: 'Update variant successful',
+
+  //Product
+  CREATE_PRODUCT_SUCCESS: 'Create new product successful'
 }

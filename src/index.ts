@@ -32,7 +32,7 @@ databaseService.connect()
 
 app.use('/auth', authRouter)
 app.use('/categories', categoryRouter)
-app.use('/media', mediaRouter)
+app.use('/medias', mediaRouter)
 app.use('/products', productRouter)
 app.use(defaultErrorHandler)
 

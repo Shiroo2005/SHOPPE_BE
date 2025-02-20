@@ -1,7 +1,10 @@
 import { config } from 'dotenv'
 import { Collection, Db, MongoClient } from 'mongodb'
 import { Category } from '~/models/schemas/category.schema'
+import { Choice } from '~/models/schemas/choices.schema'
 import Media from '~/models/schemas/media.schema'
+import { Product } from '~/models/schemas/product.schema'
+import { ProductItem } from '~/models/schemas/productItem.schema'
 import { RefreshToken } from '~/models/schemas/refreshToken.schema'
 import { User } from '~/models/schemas/user.schema'
 import { Variant } from '~/models/schemas/variant.schema'
@@ -41,6 +44,18 @@ class DatabaseService {
 
   get variants(): Collection<Variant> {
     return this.db.collection(process.env.DB_VARIANT as string)
+  }
+
+  get productItems(): Collection<ProductItem> {
+    return this.db.collection(process.env.DB_PRODUCT_ITEM as string)
+  }
+
+  get products(): Collection<Product> {
+    return this.db.collection(process.env.DB_PRODUCT as string)
+  }
+
+  get choices(): Collection<Choice> {
+    return this.db.collection(process.env.DB_CHOICE as string)
   }
 }
 

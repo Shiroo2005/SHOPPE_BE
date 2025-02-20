@@ -4,7 +4,7 @@ import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
 import { validate } from '~/utils/custom_validation'
 import { validateId, validateImage, validateName, validateParentId } from './fieldValidations/category.common'
-import { UpdateReqBody } from '~/models/req/category/UpdateReqBody'
+import { UpdateReqBody } from '~/models/req/categories/UpdateReqBody'
 
 export const createCategoryValidator = validate(
   checkSchema(

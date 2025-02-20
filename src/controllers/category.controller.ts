@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { RESPONSE_MESSAGES } from '~/constants/response_messages'
-import { CreateReqBody } from '~/models/req/category/CreateReqBody'
-import { UpdateReqBody } from '~/models/req/category/UpdateReqBody'
+import { CreateReqBody } from '~/models/req/categories/CreateReqBody'
+import { UpdateReqBody } from '~/models/req/categories/UpdateReqBody'
 import categoryService from '~/services/category.service'
 export const createCategoryController = async (
   req: Request<ParamsDictionary, any, CreateReqBody>,

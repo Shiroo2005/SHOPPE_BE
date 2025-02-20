@@ -109,7 +109,7 @@ export const accessTokenValidator = validate(
           const accessToken = value
           console.log(accessToken)
 
-          if (accessToken === '') {
+          if (!accessToken || accessToken === '') {
             throw new ErrorWithStatus({
               message: VALIDATE_MESSAGES.ACCESS_TOKEN_INVALID,
               status: HTTP_STATUS.UNAUTHORIZED

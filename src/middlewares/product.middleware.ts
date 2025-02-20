@@ -4,8 +4,8 @@ import { HTTP_STATUS } from '~/constants/http_status'
 import { REGEX } from '~/constants/regex'
 import { VALIDATE_MESSAGES } from '~/constants/validate_messages'
 import { ErrorWithStatus } from '~/models/error'
-import { CreateProductReqBody, ProductItemReqBody } from '~/models/req/product/CreateProductReqBody'
 import categoryService from '~/services/category.service'
+import variantService from '~/services/variant.product.service'
 import { validate } from '~/utils/custom_validation'
 import { trimArray } from '~/utils/helper'
 
@@ -14,22 +14,23 @@ export const createProductValidator = validate(
     {
       title: {
         matches: {
-          options: [new RegExp(REGEX.CONTAIN_NUMBER_LETTER_UNICODE, 'u')], // Chuyển thành regex object
-          errorMessage: VALIDATE_MESSAGES.PRODUCT_TITLE_REGEX
+          options: REGEX.ONLY_LETTER_NUMBER_AND_MUST_CONTAIN_ONE_LETTER,
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_TITLE_REX
         },
         isLength: {
-          options: { min: 4, max: 100 },
-          errorMessage: VALIDATE_MESSAGES.PRODUCT_TITLE_LENGTH
+          options: {
+            min: 4,
+            max: 100
+          },
+          errorMessage: `${VALIDATE_MESSAGES.MIN_LENGTH_4} and ${VALIDATE_MESSAGES.MAX_LENGTH_100}`
         }
       },
       categories: {
         isArray: {
-          errorMessage: VALIDATE_MESSAGES.PRODUCT_CATEGORY_ARRAY
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_CATEGORY_IS_INVALID
         },
         customSanitizer: {
-          options: (value) => {
-            return trimArray(value)
-          }
+          options: (value) => trimArray(value)
         },
         custom: {
           options: async (value: string[]) => {
@@ -41,9 +42,9 @@ export const createProductValidator = validate(
             }
 
             for (const id of value) {
-              if (!(typeof id == 'string') || !ObjectId.isValid(id)) {
+              if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
-                  message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_INVALID,
+                  message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_IS_INVALID,
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
               }
@@ -64,51 +65,64 @@ export const createProductValidator = validate(
       description: {
         trim: true,
         isLength: {
-          options: { min: 20, max: 200 },
-          errorMessage: VALIDATE_MESSAGES.PRODUCT_TITLE_LENGTH
+          options: {
+            min: 20,
+            max: 200
+          },
+          errorMessage: `Description ${VALIDATE_MESSAGES.MIN_LENGTH} 20 and ${VALIDATE_MESSAGES.MAX_LENGTH} 200`
         },
         isString: {
-          errorMessage: VALIDATE_MESSAGES.PRODUCT_DESC_STRING
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_DESCRIPTION_INVALID
         }
       },
       variants: {
-        optional: true,
         isArray: {
-          options: { min: 1 },
-          errorMessage: 'Variants phải là một mảng và có ít nhất một phần tử'
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_VARIANT_IS_ARRAY
+        },
+        customSanitizer: {
+          options: (value) => trimArray(value)
         },
         custom: {
-          options: (value: string[]) => {
-            value.forEach((variant) => {
-              if (!(typeof variant == 'string'))
+          options: async (value: string[]) => {
+            if (value.length === 0)
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_EMPTY,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
+            for (const id of value) {
+              if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
-                  message: 'Variant phải là mảng chứa phần tử dạng string',
+                  message: VALIDATE_MESSAGES.PRODUCT_VARIANT_INVALID,
                   status: HTTP_STATUS.UNPROCESSABLE_ENTITY
                 })
-            })
+              }
+
+              const variantExists = await variantService.findById(new ObjectId(id))
+              if (!variantExists) {
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_FOUND,
+                  status: HTTP_STATUS.BAD_REQUEST
+                })
+              }
+            }
             return true
           }
         }
-      },
+      }
+    },
+    ['body']
+  )
+)
+
+export const createProductItemValidator = validate(
+  checkSchema(
+    {
       productItems: {
         isArray: {
-          errorMessage: VALIDATE_MESSAGES.PRODUCT_ITEM_ARRAY
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_ITEM_IS_ARRAY
         },
         notEmpty: {
           errorMessage: VALIDATE_MESSAGES.PRODUCT_ITEM_NOT_EMPTY
-        },
-        custom: {
-          options: (value, { req }) => {
-            const variantNumber = (req.body as CreateProductReqBody).variants.length
-            ;(value as ProductItemReqBody[]).forEach((item) => {
-              if (item.choices.length !== variantNumber)
-                throw new ErrorWithStatus({
-                  message: VALIDATE_MESSAGES.PRODUCT_CHOICES_NUMBER_MATCH,
-                  status: HTTP_STATUS.UNPROCESSABLE_ENTITY
-                })
-            })
-            return true
-          }
         }
       },
       'productItems.*.price': {
@@ -142,12 +156,27 @@ export const createProductValidator = validate(
         isArray: {
           errorMessage: VALIDATE_MESSAGES.PRODUCT_CHOICES_ARRAY
         },
+        notEmpty: {
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_CHOICES_NOT_EMPTY
+        },
+        customSanitizer: {
+          options: (value) => trimArray(value)
+        },
         custom: {
-          options: (value: string[], { req }) => {
-            if (!value.every((choice) => typeof choice === 'string')) {
-              throw new Error(VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_INVALID)
+          options: (value: string[]) => {
+            if (!Array.isArray(value)) {
+              throw new ErrorWithStatus({
+                message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ARRAY,
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+              })
             }
-
+            for (const choice of value) {
+              if (!ObjectId.isValid(choice))
+                throw new ErrorWithStatus({
+                  message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_INVALID,
+                  status: HTTP_STATUS.UNPROCESSABLE_ENTITY
+                })
+            }
             return true
           }
         }

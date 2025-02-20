@@ -1,3 +1,3 @@
-export const trimArray = (arr: string[]) => {
-  return Array.from(new Set(arr))
+export const trimArray = (arr: any[]) => {
+  return [...new Set(arr)]
 }
