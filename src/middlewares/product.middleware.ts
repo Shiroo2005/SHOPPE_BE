@@ -26,6 +26,12 @@ export const createProductValidator = validate(
         }
       },
       categories: {
+        isArray: {
+          errorMessage: VALIDATE_MESSAGES.PRODUCT_CATEGORY_IS_INVALID
+        },
+        customSanitizer: {
+          options: (value) => trimArray(value)
+        },
         custom: {
           options: async (value: string[]) => {
             if (value.length === 0) {
@@ -35,9 +41,7 @@ export const createProductValidator = validate(
               })
             }
 
-            const arr = trimArray(value)
-
-            for (const id of arr) {
+            for (const id of value) {
               if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_CATEGORY_IS_INVALID,
@@ -75,6 +79,9 @@ export const createProductValidator = validate(
         isArray: {
           errorMessage: VALIDATE_MESSAGES.PRODUCT_VARIANT_IS_ARRAY
         },
+        customSanitizer: {
+          options: (value) => trimArray(value)
+        },
         custom: {
           options: async (value: string[]) => {
             if (value.length === 0)
@@ -82,8 +89,7 @@ export const createProductValidator = validate(
                 message: VALIDATE_MESSAGES.PRODUCT_VARIANT_NOT_EMPTY,
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
-            const arr = trimArray(value)
-            for (const id of arr) {
+            for (const id of value) {
               if (!ObjectId.isValid(id)) {
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_VARIANT_INVALID,
@@ -153,6 +159,9 @@ export const createProductItemValidator = validate(
         notEmpty: {
           errorMessage: VALIDATE_MESSAGES.PRODUCT_CHOICES_NOT_EMPTY
         },
+        customSanitizer: {
+          options: (value) => trimArray(value)
+        },
         custom: {
           options: (value: string[]) => {
             if (!Array.isArray(value)) {
@@ -161,8 +170,7 @@ export const createProductItemValidator = validate(
                 status: HTTP_STATUS.UNPROCESSABLE_ENTITY
               })
             }
-            const arr = trimArray(value)
-            for (const choice of arr) {
+            for (const choice of value) {
               if (!ObjectId.isValid(choice))
                 throw new ErrorWithStatus({
                   message: VALIDATE_MESSAGES.PRODUCT_CHOICES_ITEM_INVALID,
