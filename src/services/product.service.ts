@@ -19,13 +19,15 @@ class ProductService {
     const variantIds = Object.values(variantInDb.insertedIds)
     const choices = this.convertToChoiceMatch(payload.productItems)
     let choiceIds = await Promise.all(choices.map((choice, idx) => this.createChoices(choice, variantIds[idx])))
-
+    
     //revert choices
     choiceIds = this.revertChoice(choiceIds)
     const productItemIds = await Promise.all(
       payload.productItems.map((productItem, idx) => this.createProductItem(productItem, choiceIds[idx]))
     )
-    const result = await databaseService.products.insertOne(toProduct(payload, userId, productItemIds))
+    
+
+    const result = await databaseService.products.insertOne(toProduct(payload, userId, productItemIds, variantIds))
 
     const productInDb = await databaseService.products.findOne({ _id: result.insertedId })
     return productInDb

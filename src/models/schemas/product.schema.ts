@@ -9,8 +9,8 @@ interface ProductConstructor {
   medias: Media[]
   categoriesId: ObjectId[]
   description: string
-  variantsId: ObjectId[]
-  productItemsId: ObjectId[]
+  variantIds: ObjectId[]
+  productItemIds: ObjectId[]
   isDeleted?: boolean
   createdAt?: Date
   updatedAt?: Date
@@ -24,8 +24,8 @@ export class Product {
   medias: Media[]
   categoriesId: ObjectId[]
   description: string
-  variantsId: ObjectId[]
-  productItemsId: ObjectId[]
+  variantIds: ObjectId[]
+  productItemIds: ObjectId[]
   isDeleted: boolean
   createdAt?: Date
   updatedAt?: Date
@@ -38,8 +38,8 @@ export class Product {
     this.medias = product.medias
     this.categoriesId = product.categoriesId
     this.description = product.description
-    this.variantsId = product.variantsId
-    this.productItemsId = product.productItemsId
+    this.variantIds = product.variantIds
+    this.productItemIds = product.productItemIds
     this.isDeleted = product.isDeleted || false
     this.createdAt = product.createdAt || now
     this.updatedAt = product.updatedAt || now
